@@ -3,3 +3,6 @@
 //
 
 #include "Node.h"
+
+
+Node::Node(int currentVal, Node* nextNode) : value(currentVal), nextPoint(nextNode) { }

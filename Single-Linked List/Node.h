@@ -11,7 +11,8 @@ private:
     int value = 0;
     Node* nextPoint = nullptr;
 public:
-    Node (int, Node*){ }
+    Node(int, Node*);
+
 
 }
 
