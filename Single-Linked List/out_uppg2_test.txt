@@ -1,0 +1,36 @@
+TEST PHASE 0: constructors
+
+S1 = { 1 3 5 }
+
+S2 = { 2 3 4 }
+
+S3 = Set is empty!
+
+S4 = Set is empty!
+
+TEST PHASE 1: copy constructor
+
+S5 = { 1 3 5 }
+
+TEST PHASE 2: assignment
+
+S3 = { 1 3 5 }
+
+S4 = { 1 3 5 }
+
+TEST PHASE 3: member functions
+
+S3.member(1) ? T
+S3.member(2) ? F
+S3.member(3) ? T
+S3.member(4) ? F
+S3.member(5) ? T
+
+S3.member(99999) ? F
+
+S3.cardinality() = 3
+
+TEST PHASE 4: union
+
+S3 = { 1 2 3 4 5 }
+
