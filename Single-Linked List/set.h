@@ -8,6 +8,8 @@
 #include "node.h"
 #include <iostream>
 
+//using namespace std;
+
 class Set {
 
 public:
@@ -16,6 +18,8 @@ public:
 
     //Creating a set from n-integers in a non sorted array
     Set (int a[], int n);
+    //copy constructor
+    Set (const Set &source);
     //Destructor
     ~Set();
 
@@ -45,7 +49,7 @@ private:
     //Note: first node is a dummy node
     void insert (int x);
 
-    friend ostream& operator<< (ostream& os, const Set& b);
+    friend std::ostream& operator<< (std::ostream& os, const Set& b);
 };
 
 

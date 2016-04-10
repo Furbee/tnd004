@@ -6,6 +6,10 @@
 #define SINGLE_LINKED_LIST_NODE_H
 
 
+#include <iostream>
+
+class Set;
+
 class Node {
 private:
     int value = 0;
@@ -13,9 +17,8 @@ private:
 public:
     Node(int, Node*);
 
-
-}
-
-
+friend std::ostream& operator<< (std::ostream& os, const Set& theSet);
+friend class Set;
+};
 
 #endif //SINGLE_LINKED_LIST_NODE_H

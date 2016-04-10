@@ -15,14 +15,35 @@ Set::Set ()
 //Insert
 void Set::insert (int x){
 
+    Node* temp = head;
 
+    if(head->nextPoint == nullptr)
+        Node* xNode = new Node(x, nullptr);
+
+    else {
+        while (temp->nextPoint) {
+            if (x > temp->nextPoint->value) {
+                temp = temp->nextPoint;
+            }
+            if (x == temp->nextPoint->value) break;
+            if (x < temp->nextPoint->value) {
+                Node* xNode = new Node(x, temp->nextPoint);
+                temp->nextPoint = xNode;
+                break;
+            }
+        }
+    }
 }
 
 //Constructor creating a set
 //from n integers in a non-sorted array a
 Set::Set (int a[], int n)
 {
+    head = new Node(0, nullptr);
 
+    for( int i = 0 ; i < n ; i++ ){
+        insert(a[i]);
+    }
 }
 
 //copy constructor
@@ -41,10 +62,11 @@ Set::~Set ()
 //Test if set is empty
 bool Set::empty () const
 {
-    if (!head->next)
+    if(!head->nextPoint)
         return true;
+    else
+        return false;
 
-    return false;
 }
 
 //Return number of elements in the set
@@ -119,7 +141,20 @@ const Set& Set::operator=(const Set &s)
 
 }
 
-ostream& operator<< (ostream& os, const Set& theSet)
+std::ostream& operator<< (std::ostream& os, const Set& theSet)
 {
+    if( theSet.empty() ) {
+        os << "Set empty!" << std::endl;
+        return os;
+    }
 
+    else{
+        Node* temp = theSet.head->nextPoint;
+        while( temp ){
+            os << temp->value << " ";
+            temp = temp->nextPoint;
+        }
+        os << std::endl;
+        return os;
+    }
 }
