@@ -5,8 +5,16 @@
 #ifndef LAB1_SET_H
 #define LAB1_SET_H
 
-
+template< typename T>
 class set {
+
+public:
+    // Constructors
+    set(int);
+    set(set R);
+    // Destructor
+    ~set();
+
 
 };
 

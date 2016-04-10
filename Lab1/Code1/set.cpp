@@ -3,3 +3,14 @@
 //
 
 #include "set.h"
+
+
+
+set::set(int) {
+
+
+}
+
+set::set(set R) {}
+
+set::~set() { }
