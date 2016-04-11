@@ -70,7 +70,12 @@ Set::Set (const Set &source)
 //Destructor: deallocate all nodes
 Set::~Set ()
 {
-
+    while(head) {
+        Node* temp = head->nextPoint;
+        delete head;
+        head = temp;
+    }
+    delete head;
 }
 
 //Test if set is empty
@@ -80,20 +85,35 @@ bool Set::empty () const
         return true;
 
     return false;
-
 }
 
 //Return number of elements in the set
 int Set::cardinality() const
 {
+    Node* node = this->head->nextPoint;
 
+    int counter = 0;
 
+    while(node){
+        counter++;
+        node = node->nextPoint;
+    }
+
+    return counter;
 }
 
 //Test if x is an element of the set
 bool Set::member (int x) const
 {
+    Node* node = this->head->nextPoint;
 
+    while(node){
+        if(node->value == x){
+            return true;
+        }
+        node = node->nextPoint;
+    }
+    return false;
 }
 
 //Test if R is subset of S
