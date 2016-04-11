@@ -5,10 +5,8 @@
 #ifndef SINGLE_LINKED_LIST_SET_H
 #define SINGLE_LINKED_LIST_SET_H
 
-#include "node.h"
+#include "Node.h"
 #include <iostream>
-
-//using namespace std;
 
 class Set {
 

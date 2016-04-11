@@ -15,24 +15,30 @@ Set::Set ()
 //Insert
 void Set::insert (int x){
 
-    Node* temp = head;
-
-    if(head->nextPoint == nullptr)
-        Node* xNode = new Node(x, nullptr);
-
+    if(empty()){ // Tomt?
+        head->nextPoint = head->insert(x); // Om så är fallet sätt in x efter dummy
+    }
     else {
-        while (temp->nextPoint) {
-            if (x > temp->nextPoint->value) {
+        Node* temp = head;
+        while (temp->nextPoint){ // tittar en framåt
+            if(x > temp->nextPoint->value)
+            { // mindre gå vidare
                 temp = temp->nextPoint;
             }
-            if (x == temp->nextPoint->value) break;
-            if (x < temp->nextPoint->value) {
-                Node* xNode = new Node(x, temp->nextPoint);
-                temp->nextPoint = xNode;
-                break;
+            else if	(x < temp->nextPoint->value)
+            { // lägger till
+                temp->insert(x);			 // insert function från node
+                return;
+            }
+            else if(x == temp->nextPoint->value)
+            { // om det redan finns
+                return;
             }
         }
+
+        temp->insert(x);
     }
+
 }
 
 //Constructor creating a set
@@ -49,8 +55,16 @@ Set::Set (int a[], int n)
 //copy constructor
 Set::Set (const Set &source)
 {
+    head = new Node(0, nullptr);
 
+    Node* node = source.head->nextPoint;
+    Node* newNode = head;
 
+    while(node) {
+        newNode->nextPoint = new Node(node->value, nullptr);
+        node = node->nextPoint;
+        newNode = newNode->nextPoint;
+    }
 }
 
 //Destructor: deallocate all nodes
@@ -64,8 +78,8 @@ bool Set::empty () const
 {
     if(!head->nextPoint)
         return true;
-    else
-        return false;
+
+    return false;
 
 }
 

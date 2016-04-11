@@ -6,19 +6,27 @@
 #define SINGLE_LINKED_LIST_NODE_H
 
 
+
 #include <iostream>
+
+using namespace std;
 
 class Set;
 
-class Node {
-private:
-    int value = 0;
-    Node* nextPoint = nullptr;
+class Node
+{
 public:
-    Node(int, Node*);
+    Node (int, Node*);  // Constructor
 
-friend std::ostream& operator<< (std::ostream& os, const Set& theSet);
-friend class Set;
+    Node* insert (int x);
+
+private:
+    int value;
+    Node* nextPoint;
+
+    friend ostream& operator<< (ostream &os, const Set &theSet);
+    friend class Set;
 };
+
 
 #endif //SINGLE_LINKED_LIST_NODE_H
