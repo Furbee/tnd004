@@ -4,49 +4,58 @@
 
 #include "Set.h"
 
-Set::Set() {
+template<typename T>
+Set<T>::Set() {
 
 }
 
 template<typename T>
-Set::Set(T *a, int n) {
+Set<T>::Set(T *a, int n) {
 
 }
 
-Set::Set(const Set &b) {
+template<typename T>
+Set<T>::Set(const Set &b) {
 
 }
 
-Set::~set() {
+template<typename T>
+Set<T>::~set() {
 
 }
 
-const Set &Set::operator=(const Set &b) {
+template<typename T>
+const Set &Set<T>::operator=(const Set &b) {
     return <#initializer#>;
 }
 
-bool Set::is_empty() const {
+template<typename T>
+bool Set<T>::is_empty() const {
     return false;
 }
 
-int Set::cardinality() const {
+template<typename T>
+int Set<T>::cardinality() const {
     return 0;
 }
 
 template<typename T>
-bool Set::is_member(T val) const {
+bool Set<T>::is_member(T val) const {
     return false;
 }
 
-bool Set::operator<=(const Set &b) const {
+template<typename T>
+bool Set<T>::operator<=(const Set &b) const {
     return false;
 }
 
-bool Set::operator==(const Set &b) const {
+template<typename T>
+bool Set<T>::operator==(const Set &b) const {
     return false;
 }
 
-bool Set::operator<(const Set &b) const {
+template<typename T>
+bool Set<T>::operator<(const Set &b) const {
     return false;
 }
 
