@@ -77,10 +77,6 @@ private:
 
 
 
-
-
-
-
     Node *head;  /**< Pointer to the dummy header Node */
     Node *tail;  /**< Pointer to the dummy tail Node */
     int counter; /**< Count number of elements in the Set */

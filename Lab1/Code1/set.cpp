@@ -19,8 +19,8 @@ Set<T>::Set(const Set &b) {
 
 }
 
-template<typename T>
-Set<T>::~set() {
+
+Set::~set() {
 
 }
 
