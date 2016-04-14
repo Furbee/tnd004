@@ -228,10 +228,7 @@ private:
     {
         return S1._difference(S2); //call the private function Set<T>::_difference
     }
-
-
-
-
+    
 };
 
 
