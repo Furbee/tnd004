@@ -32,7 +32,7 @@ int main()
     /*****************************************************
     * TEST PHASE 1                                       *
     * Constructor: create a Set from an array            *
-    ******************************************************
+    ******************************************************/
     cout << "\nTEST PHASE 1: constructor from an array\n\n";
 
     int A1[] = { 1, 3, 5 };
@@ -47,7 +47,7 @@ int main()
     /*****************************************************
     * TEST PHASE 2                                       *
     * Copy constructor                                   *
-    ******************************************************
+    ******************************************************/
     cout << "\nTEST PHASE 2: copy constructor\n\n";
 
     Set<int> S5(S3);
@@ -57,7 +57,7 @@ int main()
     /*****************************************************
     * TEST PHASE 3                                       *
     * Assignment operator: operator=                     *
-    ******************************************************
+    ******************************************************/
     cout << "\nTEST PHASE 3: operator=\n\n";
 
     S1 = S2 = S5;
@@ -68,7 +68,7 @@ int main()
     /*****************************************************
     * TEST PHASE 4                                       *
     * Move constructor                                   *
-    ******************************************************
+    ******************************************************/
     cout << "\nTEST PHASE 4: move constructor\n\n";
 
     Set<int> *ptr_S = new Set<int>(S4);
@@ -83,7 +83,7 @@ int main()
     /*****************************************************
     * TEST PHASE 5                                       *
     * move assignment operator                           *
-    ******************************************************
+    ******************************************************/
     cout << "\nTEST PHASE 5: move assignment operator\n\n";
 
     ptr_S = new Set<int>(S2);
@@ -98,7 +98,7 @@ int main()
     /*****************************************************
     * TEST PHASE 6                                       *
     * is_member                                          *
-    ******************************************************
+    ******************************************************/
     cout << "\nTEST PHASE 6: is_member\n\n";
 
     for (int i = 1; i <= 5; i++)
@@ -112,7 +112,7 @@ int main()
     /*****************************************************
     * TEST PHASE 7                                       *
     * cardinality, make_clear                            *
-    ******************************************************
+    *****************************************************/
     cout << "\nTEST PHASE 7: cardinality\n\n";
 
     cout << "S1.cardinality() = "
@@ -129,7 +129,7 @@ int main()
     * TEST PHASE 8                                       *
     * Overloaded operators: operator+=, operator*=       *
     *                   and operator-=                   *
-    ******************************************************
+    *****************************************************/
     cout << "\nTEST PHASE 8: operator+=, operator*=, operator-=\n\n";
 
     S6 += S4;
@@ -145,7 +145,7 @@ int main()
     * TEST PHASE 9                                       *
     * Overloaded operators: union, intersection, and     *
     * and difference                                     *
-    ******************************************************
+    ******************************************************/
     cout << "\nTEST PHASE 9: union, intersection, and difference\n\n";
 
     S1 = (S3 + S4);
@@ -166,7 +166,7 @@ int main()
     * TEST PHASE 10                                       *
     * Overloaded operators: equality, subset, and        *
     * strict subset                                      *
-    ******************************************************
+    ******************************************************/
     cout << "\nTEST PHASE 10: equality, subset, strict subset\n\n";
 
     cout << "S4 == S1 ? " << (S4 == S1 ? 'T' : 'F') << endl;
@@ -177,7 +177,7 @@ int main()
     /*****************************************************
     * TEST PHASE 11                                       *
     * Overloaded operators: mixed-mode arithmetic        *
-    ******************************************************
+    ******************************************************/
     cout << "\nTEST PHASE 11: mixed-mode arithmetic\n\n";
 
     //Note: conversion constructor is called
@@ -190,7 +190,7 @@ int main()
     /*****************************************************
     * TEST PHASE 12                                       *
     * Create a set of strings                            *
-    ******************************************************
+    ******************************************************/
     cout << "\nTEST PHASE 12: Create a set of strings\n\n";
 
     string AA[] = {"000", "001", "010", "011", "100"};
@@ -205,9 +205,8 @@ int main()
 
     cout << "The binary strings: " << words << endl;
 
-     */
-
 	cout << "Ending ...." << endl;
+
 
     return 0;
 }
