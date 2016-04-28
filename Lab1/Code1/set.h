@@ -1,11 +1,12 @@
-//
-// Created by Oscar Nord on 07/04/16.
-//
+/*******************************************************************************************************
+*   Author: Oscar Nord och Viktor Hellman
+*   LiuID : oscno829, vikhe927
+*   Date  : 2016-04-26
+ *******************************************************************************************************/
+
 
 #ifndef LAB1_SET_H
 #define LAB1_SET_H
-
-
 
 #include <iostream>
 #include <memory>
@@ -13,6 +14,7 @@
 #include <cstdio>
 
 template< typename T>
+
 class Set {
     
 private:
@@ -27,7 +29,7 @@ private:
         : value {nodeVal}, next {nextPtr}, prev{prevPtr} {}
         
         Node(const T&& nodeVal, const std::shared_ptr<Node> nextPtr = nullptr, const std::shared_ptr<Node> prevPtr = nullptr)
-        : value{move(nodeVal)}, next{nextPtr}, prev{prevPtr} {}
+        : value{std::move(nodeVal)}, next{nextPtr}, prev{prevPtr} {}
         
         T value;
         std::shared_ptr<Node> next;
@@ -117,9 +119,10 @@ private:
     }
 };
 
-
 /*******************************************************************************************************
  '                                     Implementation of Functions
+
+ '                                     Constructors
  *******************************************************************************************************/
 
 
@@ -171,20 +174,27 @@ Set<T>::Set(const Set &b) : Set() {
         node = node->next;
     }
 }
+/*******************************************************************************************************
+ *                                     Functions
+ *******************************************************************************************************/
 
+//is the set empty
 template<typename T>
 bool Set<T>::_is_empty() const {
     
-    //TODO: Check counter instead? 
-    if(head->next == tail)return true;
+    //TODO: Check counter instead?
+    if(counter == 0){ return true; }
+    //if(head->next == tail)return true;
     else return false;
 }
 
+//How many nodes in set?
 template<typename T>
 int Set<T>::cardinality() const {
     return counter;
 }
 
+//is val a member of the set.
 template<typename T>
 bool Set<T>::is_member(const T& val) {
     auto node = head->next;
@@ -198,7 +208,7 @@ bool Set<T>::is_member(const T& val) {
     return false;
 }
 
-
+//Insert a node behind the provided node.
 template <typename T>
 void Set<T>::_insert(std::shared_ptr<Node> node, const T& val) {
     
@@ -209,7 +219,7 @@ void Set<T>::_insert(std::shared_ptr<Node> node, const T& val) {
     counter++;
 }
 
-
+//Empty a set
 template <typename T>
 void Set<T>::make_empty(){
     while(head->next != tail){
@@ -217,6 +227,7 @@ void Set<T>::make_empty(){
     }
 }
 
+//remove provided node from list, connect next and previous node.
 template <typename T>
 void Set<T>::remove_node(std::shared_ptr<Node> node){
     auto pre = node->prev.lock();
@@ -225,6 +236,7 @@ void Set<T>::remove_node(std::shared_ptr<Node> node){
     counter--;
     
 }
+
 
 template<typename T>
 void Set<T>::print(std::ostream& os) const {
@@ -238,8 +250,13 @@ void Set<T>::print(std::ostream& os) const {
         tempNode = tempNode->next;
     }
     os << "} " << std::endl;
-    
 }
+
+
+
+/*******************************************************************************************************
+ '                                     Overloaded operators
+ *******************************************************************************************************/
 
 template<typename T>
 const Set<T>& Set<T>::operator=(Set b) {
