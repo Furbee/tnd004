@@ -151,8 +151,7 @@ private:
     //Disable assignment operator!!
     const HashTable& operator=(const HashTable &) = delete;
 
-    //TODO: Implement rehash
-    void rehash() {};
+    void rehash();
     unsigned search_empty_slot(unsigned tmp_hash);
     void add_new_Item(const unsigned &idx, const Key_Type& key, const Value_Type& val);
 };
