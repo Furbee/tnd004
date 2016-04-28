@@ -198,7 +198,7 @@ const Value_Type* HashTable<Key_Type, Value_Type>::_find(const Key_Type& key)
 {
     auto tmp_hash = h(key, _size);
 
-    cout << "_find, " << "key:" << key << " hash:" << tmp_hash << endl;
+    cout << "_find, " << "key: " << key << " hash: " << tmp_hash << endl;
 
     while(hTable[tmp_hash] != nullptr) {
         if (hTable[tmp_hash]->get_key() == key) {
@@ -229,6 +229,7 @@ void HashTable<Key_Type, Value_Type>::_insert(const Key_Type& key, const Value_T
         }
         tmp_hash = ++tmp_hash % (_size);
         total_visited_slots++;
+
     }
 
     nItems++;
@@ -249,8 +250,21 @@ void HashTable<Key_Type, Value_Type>::_insert(const Key_Type& key, const Value_T
 template <typename Key_Type, typename Value_Type>
 bool HashTable<Key_Type, Value_Type>::_remove(const Key_Type& key) {
     //IMPLEMENT
+    auto tmpHash = h(key, _size);
+    if(_find(key) == nullptr) {
 
-    return false;
+        cout << "Key not found!." << endl << "Aborting." << endl;
+        return false;
+    }
+    else{
+        hTable[tmpHash] = Deleted_Item<Key_Type, Value_Type>::get_Item();
+
+        total_visited_slots++; //we visited a slot
+        nItems--;              //and removed an item
+        nDeleted++;            //while adding a deleted item
+
+        return true;
+    }
 }
 
 
