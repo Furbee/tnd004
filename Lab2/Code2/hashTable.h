@@ -143,6 +143,9 @@ private:
     //Disable assignment operator!!
     const HashTable& operator=(const HashTable &) = delete;
 
+    //TODO: rehash
+    void rehash() { };
+
 };
 
 
@@ -162,7 +165,7 @@ int nextPrime( int n );
 //f is the hash function
 template <typename Key_Type, typename Value_Type>
 HashTable<Key_Type, Value_Type>::HashTable(int table_size, HASH f)
-        : h(f), _size(table_size), nItems(0), nDeleted(0), total_visited_slots(0), count_new_items(0)
+        : _size(table_size), nItems(0), nDeleted(0), total_visited_slots(0), count_new_items(0), h(f)
 {
     hTable = new Item<Key_Type, Value_Type>*[table_size]();
 }
@@ -225,10 +228,9 @@ void HashTable<Key_Type, Value_Type>::_insert(const Key_Type& key, const Value_T
     hTable[tmp_hash] = new Item<Key_Type, Value_Type>(key,v);
     count_new_items++;
 
-    //TODO: rehash
-    //if(loadFactor() >= 0.5) {
-    //    rehash();
-    //}
+    if(loadFactor() >= MAX_LOAD_FACTOR) {
+        rehash();
+    }
 
     return;
 }
