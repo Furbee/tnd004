@@ -115,10 +115,9 @@ public:
 
 
 private:
-
-    /* ********************************** *
-    * Data members                        *
-    * *********************************** */
+   /** ************************************************************************************ *
+    *                                   Data members                                        *
+    ** **************************************************************************************/
 
     //Number of slots in the table, a prime number
     unsigned _size;
@@ -141,9 +140,10 @@ private:
     unsigned total_visited_slots;  //total number of visited slots
     unsigned count_new_items;      //number of calls to new Item()
 
-    /* ********************************** *
-    * Auxiliar member functions           *
-    * *********************************** */
+
+    /* ************************************************************************************ *
+     *                           Auxiliar member functions                                  *
+    ** ************************************************************************************ */
 
     //Disable copy constructor!!
     HashTable(const HashTable &) = delete;
@@ -152,7 +152,9 @@ private:
     const HashTable& operator=(const HashTable &) = delete;
 
     //TODO: Implement rehash
-    void rehash();
+    void rehash() {};
+    unsigned search_empty_slot(unsigned tmp_hash);
+    void add_new_Item(const unsigned &idx, const Key_Type& key, const Value_Type& val);
 };
 
 
@@ -163,9 +165,9 @@ bool isPrime( int n );
 int nextPrime( int n );
 
 
-/* ********************************** *
-* Member functions implementation     *
-* *********************************** */
+/* ************************************************************************************ *
+*                           Member functions implementation                             *
+** ************************************************************************************ */
 
 //Constructor to create a hash table
 //table_size number of slots in the table (next prime number is used)
@@ -198,17 +200,18 @@ const Value_Type* HashTable<Key_Type, Value_Type>::_find(const Key_Type& key)
 {
     auto tmp_hash = h(key, _size);
 
-    cout << "_find, " << "key: " << key << " hash: " << tmp_hash << endl;
-
-    while(hTable[tmp_hash] != nullptr) {
-        if (hTable[tmp_hash]->get_key() == key) {
-            return &hTable[tmp_hash]->get_value();
-        }
-
-        tmp_hash = ++tmp_hash % (_size);
-        total_visited_slots++;
+    if (!hTable[tmp_hash]){
+        cout << "Key not found!";
     }
+    else if(hTable[tmp_hash] && hTable[tmp_hash]->get_key() != key){
+        cout << "Slot occupied" << endl <<"Searching proximal slots." << endl;
 
+        return nullptr;
+    }
+    else {
+        cout << "_find found " << "key: '" << key << "', with value: " << hTable[tmp_hash]->get_value() << endl;
+        return &hTable[tmp_hash]->get_value();
+    }
     // key not found
     return nullptr;
 }
@@ -222,24 +225,32 @@ void HashTable<Key_Type, Value_Type>::_insert(const Key_Type& key, const Value_T
 {
     auto tmp_hash = h(key, _size);
 
-    while(hTable[tmp_hash]!= nullptr){
-        //TODO: Ask to confirm overwrite?
-        if(hTable[tmp_hash]->get_key() == key){ //if key already exists, overwrite the preexisting value.
-            hTable[tmp_hash]->set_value(v);
-            return;
-        }
-        tmp_hash = ++tmp_hash % (_size);
-        total_visited_slots++;
+    cout << "inside insert" << endl;
+
+    //TODO: Ask to confirm overwrite?
+
+    if(hTable[tmp_hash] && hTable[tmp_hash]->get_key() == key){ //if key already exists
+        hTable[tmp_hash]->set_value(v); //change value at key
+        total_visited_slots++; //u visited a slot
+
+        cout << "Value updated" << endl;
+        return;
+    }
+
+    else if(hTable[tmp_hash]){ //if slot is occupied by another key with same hash-index
+        cout << "Slot occupied by: " << hTable[tmp_hash]->get_key() << endl
+             << "Searching for new slot..." << endl;
+        tmp_hash = search_empty_slot(tmp_hash);
+        add_new_Item(tmp_hash, key, v);
+    }
+    else {
+         add_new_Item(tmp_hash, key, v);
+
 
     }
 
-    nItems++;
-    hTable[tmp_hash] = new Item<Key_Type, Value_Type>(key,v);
-    count_new_items++;
-
-    if(loadFactor() >= MAX_LOAD_FACTOR) {
-        rehash();
-    }
+    //check if loadfactor gets larger than allowed
+    if(loadFactor() >= MAX_LOAD_FACTOR) { rehash(); }
 
     return;
 }
@@ -299,9 +310,9 @@ void HashTable<Key_Type, Value_Type>::display(ostream& os)
 }
 
 
-/* ********************************** *
-* Auxiliary member functions           *
-* *********************************** */
+/* ************************************************************************************ *
+ *                           Auxiliar member functions                                  *
+** ************************************************************************************ */
 
 template <typename Key_Type, typename Value_Type>
 void HashTable<Key_Type, Value_Type>::rehash() {
@@ -330,11 +341,33 @@ void HashTable<Key_Type, Value_Type>::rehash() {
     delete[] OldhTable;
 }
 
-/* ********************************** *
-* Functions to find prime numbers     *
-* *********************************** */
+//searches for for next empty slot after index tmp_hash
+template <typename Key_Type, typename Value_Type>
+unsigned HashTable<Key_Type, Value_Type>::search_empty_slot(unsigned tmp_hash) {
+    unsigned i = tmp_hash;
+
+    while ( hTable[i]) {
+        i++;
+        cout << "slot tested:" << i << " ";
+        total_visited_slots++;
+    }
+    cout << endl;
+    return i;
+
+}
+
+//add a new Item to the HashTable,
+template <typename Key_Type, typename Value_Type>
+void HashTable<Key_Type, Value_Type>::add_new_Item(const unsigned& idx, const Key_Type& key, const Value_Type& val){
+    hTable[idx] = new Item<Key_Type, Value_Type>(key, val);
+    nItems++;
+    count_new_items++;
+}
 
 
+/* ************************************************************************************ *
+ *                           Functions to find prime numbers                            *
+* ************************************************************************************ */
 //Test if a number is prime
 bool isPrime( int n )
 {
