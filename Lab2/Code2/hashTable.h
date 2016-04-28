@@ -143,7 +143,7 @@ private:
 
     /* ************************************************************************************ *
      *                           Auxiliar member functions                                  *
-    /* ************************************************************************************ */
+    ** ************************************************************************************ */
 
     //Disable copy constructor!!
     HashTable(const HashTable &) = delete;
@@ -154,7 +154,7 @@ private:
     //TODO: Implement rehash
     void rehash() {};
     unsigned search_empty_slot(unsigned tmp_hash);
-    void add_new_Item(const unsigned idx, const Key_Type& key, const Value_Type val);
+    void add_new_Item(const unsigned &idx, const Key_Type& key, const Value_Type& val);
 };
 
 
@@ -167,7 +167,7 @@ int nextPrime( int n );
 
 /* ************************************************************************************ *
 *                           Member functions implementation                             *
-/* ************************************************************************************ */
+** ************************************************************************************ */
 
 //Constructor to create a hash table
 //table_size number of slots in the table (next prime number is used)
@@ -249,11 +249,8 @@ void HashTable<Key_Type, Value_Type>::_insert(const Key_Type& key, const Value_T
 
     }
 
-/*
-    //Load factor getting big ? reHash : ignore
-    if(loadFactor() >= MAX_LOAD_FACTOR) {
-        rehash();
-    }*/
+    //check if loadfactor gets larger than allowed
+    if(loadFactor() >= MAX_LOAD_FACTOR) { rehash(); }
 
     return;
 }
@@ -315,7 +312,7 @@ void HashTable<Key_Type, Value_Type>::display(ostream& os)
 
 /* ************************************************************************************ *
  *                           Auxiliar member functions                                  *
-/* ************************************************************************************ */
+** ************************************************************************************ */
 
 
 //searches for for next empty slot after index tmp_hash
@@ -335,7 +332,7 @@ unsigned HashTable<Key_Type, Value_Type>::search_empty_slot(unsigned tmp_hash) {
 
 //add a new Item to the HashTable,
 template <typename Key_Type, typename Value_Type>
-void HashTable<Key_Type, Value_Type>::add_new_Item(const unsigned idx, const Key_Type& key, const Value_Type val){
+void HashTable<Key_Type, Value_Type>::add_new_Item(const unsigned& idx, const Key_Type& key, const Value_Type& val){
     hTable[idx] = new Item<Key_Type, Value_Type>(key, val);
     nItems++;
     count_new_items++;
@@ -344,7 +341,7 @@ void HashTable<Key_Type, Value_Type>::add_new_Item(const unsigned idx, const Key
 
 /* ************************************************************************************ *
  *                           Functions to find prime numbers                            *
-/* ************************************************************************************ */
+* ************************************************************************************ */
 //Test if a number is prime
 bool isPrime( int n )
 {
