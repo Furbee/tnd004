@@ -199,14 +199,28 @@ const Value_Type* HashTable<Key_Type, Value_Type>::_find(const Key_Type& key)
 {
     auto tmp_hash = h(key, _size);
 
+
+    //if slot is empty keys does not exist
     if (!hTable[tmp_hash]){
         cout << "Key not found!";
     }
+
+    //if slot is occupied but does not equal key
     else if(hTable[tmp_hash] && hTable[tmp_hash]->get_key() != key){
         cout << "Slot occupied" << endl <<"Searching proximal slots." << endl;
 
+        unsigned emptySlot = search_empty_slot(tmp_hash);
+
+        for(tmp_hash++ ; tmp_hash < emptySlot ; tmp_hash++ ){                     //check all slots up to emptySlot
+            if(hTable[tmp_hash]->get_key() == key){
+                cout << "_find found " << "key: '" << key << "', with value: " << hTable[tmp_hash]->get_value() << endl;
+                return &hTable[tmp_hash]->get_value();
+            }
+        }
         return nullptr;
     }
+
+    //slot is occupied by key
     else {
         cout << "_find found " << "key: '" << key << "', with value: " << hTable[tmp_hash]->get_value() << endl;
         return &hTable[tmp_hash]->get_value();
@@ -228,24 +242,25 @@ void HashTable<Key_Type, Value_Type>::_insert(const Key_Type& key, const Value_T
 
     //TODO: Ask to confirm overwrite?
 
-    if(hTable[tmp_hash] && hTable[tmp_hash]->get_key() == key){ //if key already exists
-        hTable[tmp_hash]->set_value(v); //change value at key
-        total_visited_slots++; //u visited a slot
+    //if key already exists at given slot
+    if(hTable[tmp_hash] && hTable[tmp_hash]->get_key() == key){
+        hTable[tmp_hash]->set_value(v);                                       //change value at key
+        total_visited_slots++;
 
         cout << "Value updated" << endl;
         return;
     }
 
-    else if(hTable[tmp_hash]){ //if slot is occupied by another key with same hash-index
+    //if slot is occupied by another key with same hash-index
+    else if(hTable[tmp_hash]){
         cout << "Slot occupied by: " << hTable[tmp_hash]->get_key() << endl
              << "Searching for new slot..." << endl;
-        tmp_hash = search_empty_slot(tmp_hash);
+        tmp_hash = search_empty_slot(tmp_hash);                              //return new slot to insert item in.
         add_new_Item(tmp_hash, key, v);
     }
+
     else {
          add_new_Item(tmp_hash, key, v);
-
-
     }
 
     //check if loadfactor gets larger than allowed
@@ -270,9 +285,9 @@ bool HashTable<Key_Type, Value_Type>::_remove(const Key_Type& key) {
     else{
         hTable[tmpHash] = Deleted_Item<Key_Type, Value_Type>::get_Item();
 
-        total_visited_slots++; //we visited a slot
-        nItems--;              //and removed an item
-        nDeleted++;            //while adding a deleted item
+        total_visited_slots++;
+        nItems--;
+        nDeleted++;
 
         return true;
     }
