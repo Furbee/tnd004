@@ -162,9 +162,9 @@ int nextPrime( int n );
 //f is the hash function
 template <typename Key_Type, typename Value_Type>
 HashTable<Key_Type, Value_Type>::HashTable(int table_size, HASH f)
-    : h(f)
+        : h(f), _size(table_size), nItems(0), nDeleted(0), total_visited_slots(0), count_new_items(0)
 {
-    //IMPLEMENT
+    hTable = new Item<Key_Type, Value_Type>*[table_size]();
 }
 
 
@@ -172,7 +172,12 @@ HashTable<Key_Type, Value_Type>::HashTable(int table_size, HASH f)
 template <typename Key_Type, typename Value_Type>
 HashTable<Key_Type, Value_Type>::~HashTable()
 {
-    //IMPLEMENT
+    for (int i = 0; i < _size; i++) {
+        if(hTable[i] != nullptr) {
+            delete hTable[i];
+        }
+    }
+    delete[] hTable;
 }
 
 
@@ -181,9 +186,21 @@ HashTable<Key_Type, Value_Type>::~HashTable()
 template <typename Key_Type, typename Value_Type>
 const Value_Type* HashTable<Key_Type, Value_Type>::_find(const Key_Type& key)
 {
-   //IMPLEMENT
+    auto tmp_hash = h(key, _size);
 
-   return (new Value_Type()); //delete this code
+    cout << "_find, " << "key:" << key << " hash:" << tmp_hash << endl;
+
+    while(hTable[tmp_hash] != nullptr) {
+        if (hTable[tmp_hash]->get_key() == key) {
+            return &hTable[tmp_hash]->get_value();
+        }
+
+        tmp_hash = ++tmp_hash % (_size);
+        total_visited_slots++;
+    }
+
+    // key not found
+    return nullptr;
 }
 
 
@@ -193,7 +210,27 @@ const Value_Type* HashTable<Key_Type, Value_Type>::_find(const Key_Type& key)
 template <typename Key_Type, typename Value_Type>
 void HashTable<Key_Type, Value_Type>::_insert(const Key_Type& key, const Value_Type& v)
 {
-     //IMPLEMENT
+    auto tmp_hash = h(key, _size);
+
+    while(hTable[tmp_hash]!= nullptr){
+        if(hTable[tmp_hash]->get_key() == key){
+            hTable[tmp_hash]->set_value(v);
+            return;
+        }
+        tmp_hash = ++tmp_hash % (_size);
+        total_visited_slots++;
+    }
+
+    nItems++;
+    hTable[tmp_hash] = new Item<Key_Type, Value_Type>(key,v);
+    count_new_items++;
+
+    //TODO: rehash
+    //if(loadFactor() >= 0.5) {
+    //    rehash();
+    //}
+
+    return;
 }
 
 
