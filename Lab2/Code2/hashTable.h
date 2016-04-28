@@ -314,6 +314,32 @@ void HashTable<Key_Type, Value_Type>::display(ostream& os)
  *                           Auxiliar member functions                                  *
 ** ************************************************************************************ */
 
+template <typename Key_Type, typename Value_Type>
+void HashTable<Key_Type, Value_Type>::rehash() {
+
+    auto OldhTable = hTable;
+    int OldSize = _size;
+
+    nItems = 0;
+
+    _size = nextPrime(OldSize * 2);
+    hTable = new Item<Key_Type, Value_Type>*[_size]();
+
+    //Copy to new Table
+    for (size_t i = 0; i < OldSize; i++) {
+        if (OldhTable[i] != nullptr && OldhTable[i] != Deleted_Item<Key_Type, Value_Type>::get_Item()) {
+            _insert(OldhTable[i]->get_key(), OldhTable[i]->get_value());
+        }
+    }
+
+    // delete old Table
+    for (size_t i = 0; i < OldSize; i++) {
+        if(OldhTable[i] != nullptr) {
+            delete OldhTable[i];
+        }
+    }
+    delete[] OldhTable;
+}
 
 //searches for for next empty slot after index tmp_hash
 template <typename Key_Type, typename Value_Type>
