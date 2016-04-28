@@ -41,6 +41,7 @@ int main()
         switch(choice)
         {
         case 1:
+            cout << endl << endl << "Tablesize: " << table.getSize() << endl << endl;
 
             cout << "Enter value to be inserted: ";
             cin >> value;
