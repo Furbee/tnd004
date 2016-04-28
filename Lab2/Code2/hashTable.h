@@ -64,6 +64,15 @@ public:
     }
 
 
+
+
+    unsigned int getSize(){
+        return _size;
+    }
+
+
+
+
     //Return a pointer to the value associated with key
     //If key does not exist in the table then nullptr is returned
     const Value_Type* _find(const Key_Type& key);
@@ -143,8 +152,7 @@ private:
     //Disable assignment operator!!
     const HashTable& operator=(const HashTable &) = delete;
 
-    //TODO: rehash
-    void rehash() { };
+    void rehash();
 
 };
 
@@ -165,9 +173,9 @@ int nextPrime( int n );
 //f is the hash function
 template <typename Key_Type, typename Value_Type>
 HashTable<Key_Type, Value_Type>::HashTable(int table_size, HASH f)
-        : _size(table_size), nItems(0), nDeleted(0), total_visited_slots(0), count_new_items(0), h(f)
+        : h(f), _size(nextPrime(table_size)), nItems(0), nDeleted(0), total_visited_slots(0), count_new_items(0)
 {
-    hTable = new Item<Key_Type, Value_Type>*[table_size]();
+    hTable = new Item<Key_Type, Value_Type>*[nextPrime(table_size)]();
 }
 
 
@@ -216,7 +224,7 @@ void HashTable<Key_Type, Value_Type>::_insert(const Key_Type& key, const Value_T
     auto tmp_hash = h(key, _size);
 
     while(hTable[tmp_hash]!= nullptr){
-        if(hTable[tmp_hash]->get_key() == key){
+        if(hTable[tmp_hash]->get_key() == key){ //if key already exists, overwrite the preexisting value. TODO: Ask to confirm overwrite?
             hTable[tmp_hash]->set_value(v);
             return;
         }
@@ -240,8 +248,7 @@ void HashTable<Key_Type, Value_Type>::_insert(const Key_Type& key, const Value_T
 //If an Item was removed then return true
 //otherwise, return false
 template <typename Key_Type, typename Value_Type>
-bool HashTable<Key_Type, Value_Type>::_remove(const Key_Type& key)
-{
+bool HashTable<Key_Type, Value_Type>::_remove(const Key_Type& key) {
     //IMPLEMENT
 
     return false;
@@ -262,16 +269,13 @@ void HashTable<Key_Type, Value_Type>::display(ostream& os)
     {
         os << setw(6) << i << ": ";
 
-        if (!hTable[i])
-        {
+        if (!hTable[i]) {
             os << "null" << endl;
         }
-        else if (hTable[i] == Deleted_Item<Key_Type, Value_Type>::get_Item())
-        {
+        else if (hTable[i] == Deleted_Item<Key_Type, Value_Type>::get_Item()) {
             os << "deleted" << endl;
         }
-        else
-        {
+        else {
             os << *hTable[i]
                << "  (" << h(hTable[i]->get_key(),_size) << ")" << endl;
         }
