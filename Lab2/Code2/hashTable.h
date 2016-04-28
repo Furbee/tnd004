@@ -141,7 +141,6 @@ private:
     unsigned total_visited_slots;  //total number of visited slots
     unsigned count_new_items;      //number of calls to new Item()
 
-
     /* ********************************** *
     * Auxiliar member functions           *
     * *********************************** */
