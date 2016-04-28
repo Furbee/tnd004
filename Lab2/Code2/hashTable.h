@@ -151,7 +151,7 @@ private:
     //Disable assignment operator!!
     const HashTable& operator=(const HashTable &) = delete;
 
-    void rehash();
+    void rehash() {};
 
 };
 
