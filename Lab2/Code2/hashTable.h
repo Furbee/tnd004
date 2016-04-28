@@ -151,6 +151,7 @@ private:
     //Disable assignment operator!!
     const HashTable& operator=(const HashTable &) = delete;
 
+    //TODO: Implement rehash
     void rehash() {};
 
 };
@@ -223,7 +224,8 @@ void HashTable<Key_Type, Value_Type>::_insert(const Key_Type& key, const Value_T
     auto tmp_hash = h(key, _size);
 
     while(hTable[tmp_hash]!= nullptr){
-        if(hTable[tmp_hash]->get_key() == key){ //if key already exists, overwrite the preexisting value. TODO: Ask to confirm overwrite?
+        //TODO: Ask to confirm overwrite?
+        if(hTable[tmp_hash]->get_key() == key){ //if key already exists, overwrite the preexisting value.
             hTable[tmp_hash]->set_value(v);
             return;
         }
