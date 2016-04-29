@@ -173,7 +173,7 @@ int nextPrime( int n );
 //f is the hash function
 template <typename Key_Type, typename Value_Type>
 HashTable<Key_Type, Value_Type>::HashTable(int table_size, HASH f)
-        : h(f), _size(nextPrime(table_size)), nItems(0), nDeleted(0), total_visited_slots(0), count_new_items(0)
+        : _size(nextPrime(table_size)), nItems(0), nDeleted(0), total_visited_slots(0), count_new_items(0), h(f)
 {
     hTable = new Item<Key_Type, Value_Type>*[nextPrime(table_size)]();
 }
@@ -211,7 +211,7 @@ const Value_Type* HashTable<Key_Type, Value_Type>::_find(const Key_Type& key)
 
         unsigned emptySlot = search_empty_slot(tmp_hash);
 
-        for(tmp_hash++ ; tmp_hash < emptySlot ; tmp_hash++ ){                     //check all slots up to emptySlot
+        for(tmp_hash++ ; tmp_hash < emptySlot ; tmp_hash++ ) {  //check all slots up to emptySlot
             if(hTable[tmp_hash]->get_key() == key){
                 cout << "_find found " << "key: '" << key << "', with value: " << hTable[tmp_hash]->get_value() << endl;
                 return &hTable[tmp_hash]->get_value();
@@ -378,10 +378,18 @@ void HashTable<Key_Type, Value_Type>::add_new_Item(const unsigned& idx, const Ke
     count_new_items++;
 }
 
+template <typename Key_Type, typename Value_Type>
+HashTable<Key_Type, Value_Type>::operator[](const Key_Type &key) {
+
+
+    return <#initializer#>;
+}
+
 
 /* ************************************************************************************ *
  *                           Functions to find prime numbers                            *
 * ************************************************************************************ */
+
 //Test if a number is prime
 bool isPrime( int n )
 {
