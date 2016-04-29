@@ -379,10 +379,10 @@ void HashTable<Key_Type, Value_Type>::add_new_Item(const unsigned& idx, const Ke
 }
 
 template <typename Key_Type, typename Value_Type>
-HashTable<Key_Type, Value_Type>::operator[](const Key_Type &key) {
+Value_Type& HashTable<Key_Type, Value_Type>::operator[](const Key_Type& key) {
 
 
-    return <#initializer#>;
+    return nullptr;
 }
 
 
