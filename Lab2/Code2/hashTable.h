@@ -377,13 +377,18 @@ void HashTable<Key_Type, Value_Type>::add_new_Item(const unsigned& idx, const Ke
 template <typename Key_Type, typename Value_Type>
 Value_Type& HashTable<Key_Type, Value_Type>::operator[](const Key_Type& key) {
 
-    auto tempHash = h(key, _size);
+    cout << "Inside overloaded operator" << endl;
 
-    if(hTable[tempHash]->get_key() == key){
+    auto tempHash = h(key, _size);
+    cout << "Value assigned!" << endl;
+
+    if(hTable[tempHash] && hTable[tempHash]->get_key() == key){
+        cout << "get_key == key" << endl;
         total_visited_slots++;
         hTable[tempHash]->set_value(hTable[tempHash]->get_value()++);
     }
     else{
+        cout << "Key don't exist... inserting" << endl;
         _insert(key, Value_Type());
     }
 
