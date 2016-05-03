@@ -9,6 +9,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(SOURCE_FILES
     Code2/hashTable.h
     Code2/Item.h
-    Code2/test.cpp)
+    Code2/main.cpp)
 
 add_executable(Lab2 ${SOURCE_FILES})

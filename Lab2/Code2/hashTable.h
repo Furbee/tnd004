@@ -199,10 +199,11 @@ const Value_Type* HashTable<Key_Type, Value_Type>::_find(const Key_Type& key)
 {
     auto tmp_hash = h(key, _size);
 
-
     //if slot is empty keys does not exist
     if (!hTable[tmp_hash]){
         cout << "Key not found!";
+        // key not found
+        return nullptr;
     }
 
     //if slot is occupied but does not equal key
@@ -225,8 +226,6 @@ const Value_Type* HashTable<Key_Type, Value_Type>::_find(const Key_Type& key)
         cout << "_find found " << "key: '" << key << "', with value: " << hTable[tmp_hash]->get_value() << endl;
         return &hTable[tmp_hash]->get_value();
     }
-    // key not found
-    return nullptr;
 }
 
 
@@ -378,8 +377,17 @@ void HashTable<Key_Type, Value_Type>::add_new_Item(const unsigned& idx, const Ke
 template <typename Key_Type, typename Value_Type>
 Value_Type& HashTable<Key_Type, Value_Type>::operator[](const Key_Type& key) {
 
+    auto tempHash = h(key, _size);
 
-    return nullptr;
+    if(hTable[tempHash]->get_key() == key){
+        total_visited_slots++;
+        hTable[tempHash]->set_value(hTable[tempHash]->get_value()++);
+    }
+    else{
+        _insert(key, Value_Type());
+    }
+
+    return hTable[tempHash]->get_value();
 }
 
 
