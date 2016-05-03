@@ -161,7 +161,7 @@ private:
 bool isPrime( int n );
 
 //Return a prime number at least as large as n
-int nextPrime( int n );
+unsigned nextPrime( int n );
 
 
 /* ************************************************************************************ *
@@ -238,10 +238,6 @@ void HashTable<Key_Type, Value_Type>::_insert(const Key_Type& key, const Value_T
 {
     auto tmp_hash = h(key, _size);
 
-    cout << "inside insert" << endl;
-
-    //TODO: Ask to confirm overwrite?
-
     //if key already exists at given slot
     if(hTable[tmp_hash] && hTable[tmp_hash]->get_key() == key){
         hTable[tmp_hash]->set_value(v);                                       //change value at key
@@ -255,7 +251,7 @@ void HashTable<Key_Type, Value_Type>::_insert(const Key_Type& key, const Value_T
     else if(hTable[tmp_hash]){
         cout << "Slot occupied by: " << hTable[tmp_hash]->get_key() << endl
              << "Searching for new slot..." << endl;
-        tmp_hash = search_empty_slot(tmp_hash);                              //return new slot to insert item in.
+        tmp_hash = search_empty_slot(tmp_hash) % _size;                              //return new slot to insert item in.
         add_new_Item(tmp_hash, key, v);
     }
 
@@ -362,9 +358,10 @@ unsigned HashTable<Key_Type, Value_Type>::search_empty_slot(unsigned tmp_hash) {
 
     while ( hTable[i]) {
         i++;
-        cout << "slot tested:" << i << " ";
+        cout << "Slot tested:" << i % _size << ". ";
         total_visited_slots++;
     }
+    cout << endl << "Slot found at " << i %_size << endl;
     cout << endl;
     return i;
 
@@ -408,7 +405,7 @@ bool isPrime( int n )
 
 
 //Return a prime number at least as large as n
-int nextPrime( int n )
+unsigned nextPrime( int n )
 {
     if( n % 2 == 0 )
         n++;
