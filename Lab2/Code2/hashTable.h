@@ -336,7 +336,7 @@ void HashTable<Key_Type, Value_Type>::rehash() {
 
     //Copy to new Table
     for (size_t i = 0; i < OldSize; i++) {
-        if (OldhTable[i] != nullptr && OldhTable[i] != Deleted_Item<Key_Type, Value_Type>::get_Item()) {
+        if ( OldhTable[i] != nullptr && OldhTable[i] != Deleted_Item<Key_Type, Value_Type>::get_Item() ) {
             _insert(OldhTable[i]->get_key(), OldhTable[i]->get_value());
         }
     }
@@ -377,10 +377,10 @@ void HashTable<Key_Type, Value_Type>::add_new_Item(const unsigned& idx, const Ke
 template <typename Key_Type, typename Value_Type>
 Value_Type& HashTable<Key_Type, Value_Type>::operator[](const Key_Type& key) {
 
-    cout << "Inside overloaded operator" << endl;
+    //cout << "Inside overloaded operator" << endl;
 
     auto tempHash = h(key, _size);
-    cout << "Value assigned!" << endl;
+    //cout << "Value assigned!" << endl;
 
     if(hTable[tempHash] && hTable[tempHash]->get_key() == key){
         cout << "get_key == key" << endl;
