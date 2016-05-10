@@ -3,6 +3,8 @@
 
 #include "dsexceptions.h"
 #include <algorithm>
+#include <mutex>          // std::mutex, std::lock
+
 using namespace std;
 
 // BinarySearchTree class
@@ -134,7 +136,7 @@ class BinarySearchTree
     /**
      * Insert x into the tree; duplicates are ignored.
      */
-    void insert( const Comparable & x )
+    void insert( const Comparable x )
     {
         insert( x, root );
     }
@@ -150,7 +152,7 @@ class BinarySearchTree
     /**
      * Remove x from the tree. Nothing is done if x is not found.
      */
-    void remove( const Comparable & x )
+    void remove( const Comparable x )
     {
         remove( x, root );
     }
@@ -160,17 +162,17 @@ class BinarySearchTree
     struct BinaryNode
     {
         Comparable element;
-        BinaryNode *left;
-        BinaryNode *right;
+        shared_ptr<BinaryNode> left;
+        weak_ptr<BinaryNode> right;
 
-        BinaryNode( const Comparable & theElement, BinaryNode *lt, BinaryNode *rt )
+        BinaryNode( const Comparable & theElement, shared_ptr<BinaryNode> lt, shared_ptr<BinaryNode> rt )
           : element{ theElement }, left{ lt }, right{ rt } { }
 
-        BinaryNode( Comparable && theElement, BinaryNode *lt, BinaryNode *rt )
+        BinaryNode( Comparable && theElement, shared_ptr<BinaryNode> lt, shared_ptr<BinaryNode> rt )
           : element{ std::move( theElement ) }, left{ lt }, right{ rt } { }
     };
 
-    BinaryNode *root;
+    shared_ptr<BinaryNode> root;
 
 
     /**
@@ -179,14 +181,14 @@ class BinarySearchTree
      * t is the node that roots the subtree.
      * Set the new root of the subtree.
      */
-    void insert( const Comparable & x, BinaryNode * & t )
+    void insert( const Comparable & x, shared_ptr<BinaryNode>& t )
     {
         if( t == nullptr )
             t = new BinaryNode{ x, nullptr, nullptr };
         else if( x < t->element )
             insert( x, t->left );
         else if( t->element < x )
-            insert( x, t->right );
+            insert( x, t->right.lock() );
         else
         {
             ;  // Duplicate; do nothing
@@ -199,14 +201,14 @@ class BinarySearchTree
      * t is the node that roots the subtree.
      * Set the new root of the subtree.
      */
-    void insert( Comparable && x, BinaryNode * & t )
+    void insert( Comparable && x, shared_ptr<BinaryNode> t )
     {
         if( t == nullptr )
             t = new BinaryNode{ std::move( x ), nullptr, nullptr };
         else if( x < t->element )
             insert( std::move( x ), t->left );
         else if( t->element < x )
-            insert( std::move( x ), t->right );
+            insert( std::move( x ), t->right.lock() );
         else
         {
              ;  // Duplicate; do nothing
@@ -219,7 +221,7 @@ class BinarySearchTree
      * t is the node that roots the subtree.
      * Set the new root of the subtree.
      */
-    void remove( const Comparable & x, BinaryNode * & t )
+    void remove( const Comparable & x, shared_ptr<BinaryNode> t )
     {
         if( t == nullptr )
             return;   // Item not found; do nothing
@@ -227,15 +229,15 @@ class BinarySearchTree
             remove( x, t->left );
         else if( t->element < x )
             remove( x, t->right );
-        else if( t->left != nullptr && t->right != nullptr ) // Two children
+        else if( t->left != nullptr && t->right.lock() != nullptr ) // Two children
         {
             t->element = findMin( t->right )->element;
             remove( t->element, t->right );
         }
         else
         {
-            BinaryNode *oldNode = t;
-            t = ( t->left != nullptr ) ? t->left : t->right;
+            shared_ptr<BinaryNode> oldNode = t;
+            t = ( t->left != nullptr ) ? t->left : t->right.lock();
             delete oldNode;
         }
     }
