@@ -162,8 +162,8 @@ class BinarySearchTree
     struct BinaryNode
     {
         Comparable element;
-        shared_ptr<BinaryNode> left;
-        weak_ptr<BinaryNode> right;
+        shared_ptr<BinaryNode> left, right;
+        weak_ptr<BinaryNode> parent;
 
         BinaryNode( const Comparable & theElement, shared_ptr<BinaryNode> lt, shared_ptr<BinaryNode> rt )
           : element{ theElement }, left{ lt }, right{ rt } { }
@@ -181,14 +181,14 @@ class BinarySearchTree
      * t is the node that roots the subtree.
      * Set the new root of the subtree.
      */
-    void insert( const Comparable & x, shared_ptr<BinaryNode>& t )
+    void insert( const Comparable & x, shared_ptr<BinaryNode> &t )
     {
         if( t == nullptr )
-            t = new BinaryNode{ x, nullptr, nullptr };
+            t = make_shared<BinaryNode>( x, nullptr, nullptr);
         else if( x < t->element )
             insert( x, t->left );
         else if( t->element < x )
-            insert( x, t->right.lock() );
+            insert( x, t->right );
         else
         {
             ;  // Duplicate; do nothing
@@ -208,7 +208,7 @@ class BinarySearchTree
         else if( x < t->element )
             insert( std::move( x ), t->left );
         else if( t->element < x )
-            insert( std::move( x ), t->right.lock() );
+            insert( std::move( x ), t->right);
         else
         {
              ;  // Duplicate; do nothing
