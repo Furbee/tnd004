@@ -1,6 +1,5 @@
 #include <iostream>
 #include <vector>
-
 #include "BinarySearchTree.h"
 
 using namespace std;
@@ -33,7 +32,7 @@ int main( )
 
     /**************************************/
     cout << "\nPHASE 2: contains\n\n";
-    /**************************************/
+    /**************************************
 
     for(int i = 2; i < 36; i+=2 )
     {
@@ -99,7 +98,7 @@ int main( )
 
     /**************************************/
     cout << "\nPHASE 7: remove\n\n";
-    /**************************************/
+    /**************************************
 
     for(int i = 0; i < 35; i+= 2 )
     {
@@ -112,6 +111,7 @@ int main( )
     t1.printTree( );
     cout << endl;
 
+    */
     cout << "\nFinished testing" << endl;
 
     return 0;
