@@ -35,11 +35,11 @@ int main( )
 
     /**************************************/
     cout << "\nPHASE 2: contains\n\n";
-    /**************************************/
+    /**************************************
 
     for(int i = 2; i < 36; i+=2 )
     {
-        if ( t1.contains() )
+        if ( t1.contains() != t1.end )
             cout << i << " in the tree" << endl;
         else
             cout << i << " not in the tree" << endl;
