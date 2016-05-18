@@ -397,15 +397,6 @@ class BinarySearchTree
 
     void makeEmpty( shared_ptr<BinaryNode> &t )
     {
-
-        /*
-        if( t != nullptr )
-        {
-            makeEmpty( t->left );
-            makeEmpty( t->right );
-            delete t;
-        }
-        */
         t = nullptr;
     }
 
@@ -472,9 +463,6 @@ class BinarySearchTree
             }
 
         }
-
-
-
 
         /*
         if(current == nullptr){
