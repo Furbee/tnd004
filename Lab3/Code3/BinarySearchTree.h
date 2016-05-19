@@ -432,11 +432,25 @@ class BinarySearchTree
         }
     }
 
+    /* Tree
+             20
+          /     \
+         10      30
+        /  \    /  \
+       5   15  25   35
+           /        /
+          12       33
+           \
+           14          */
+
+
     shared_ptr<BinaryNode> find_succes(shared_ptr<BinaryNode>& current){
         if(current && current->right){
             return findMin(current->right);
         }
-        else
+        else {
+            return findMin(current->parent.lock()->left);
+        }
 
     }
 
@@ -444,7 +458,9 @@ class BinarySearchTree
         if(current && current->left ){
             return findMax(current->left);
         }
-        else
+        else {
+            return findMax(current->parent.lock()->right);
+        }
 
     }
 /*
