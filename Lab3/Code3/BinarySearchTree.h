@@ -61,20 +61,29 @@ public:
     public:
         BiIterator(shared_ptr<BinaryNode> bn = nullptr);
 
-        Comparable &operator*() const;
+        Comparable &operator*() const {
+            return this->current->element;
+        }
 
-        Comparable *operator->() const;
 
-        bool operator==(const BiIterator &it) const;
+        Comparable operator->() const {
+            return current;
+        }
 
-        bool operator!=(const BiIterator &it) const;
+        bool operator==(const BiIterator &it) const {
+            return this->current->element == it.current->element;
+        }
+
+        bool operator!=(const BiIterator &it) const {
+            return this->current->element != it.current->element;
+        }
 
         BiIterator &operator++();
 
         BiIterator &operator--();
 
     private:
-        shared_ptr<BinaryNode> *current;
+        shared_ptr<BinaryNode> current = nullptr;
     };
 
     BinarySearchTree() : root{nullptr} {
@@ -452,5 +461,6 @@ private:
         }
     }
 };
+
 
 #endif
