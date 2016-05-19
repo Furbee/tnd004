@@ -83,43 +83,12 @@ class BinarySearchTree
     }
 
     void find_pred_succ(Comparable x, Comparable& low, Comparable& high) {
-        auto current = root;
-        //find_pre_success(current, x, low, high);
-        crop_tree(current, high, low);
+        //call private help function
+        find_pre_success(x, low, high, root);
 
-        cout << "Current: " << current->element << endl << endl;
-
-        high = find_succes(current)->element;
-        low = find_pre(current)->element;
-
-
-        /*if( x < current->element) {
-            high = current->element;
-            low = find_pre(x,current->left)->element;
-            }
-
-        /*
-        high = find_succes(x, current)->element;
-
-        low = find_pre(x, current)->element;
-        */
     }
 
-    void crop_tree(shared_ptr<BinaryNode>& current, Comparable& high, Comparable& low){
 
-        //if(current == nullptr) return;
-        if(high < current->element && low < current->element){
-            high = current->element;
-            current = current->left;
-            crop_tree(current, high, low);
-        }
-        if(high > current->element && low > current->element ){
-            low = current->element;
-            current = current->right;
-            crop_tree(current, high, low);
-        }
-        return;
-    }
 
     /**
      * Move assignment
@@ -432,7 +401,7 @@ class BinarySearchTree
         }
     }
 
-    /* Tree
+    /*      Tree
              20
           /     \
          10      30
@@ -443,71 +412,44 @@ class BinarySearchTree
            \
            14          */
 
-
-    shared_ptr<BinaryNode> find_succes(shared_ptr<BinaryNode>& current){
-        if(current && current->right){
-            return findMin(current->right);
-        }
-        else {
-            return findMin(current->parent.lock()->left);
-        }
-
-    }
-
-    shared_ptr<BinaryNode> find_pre(shared_ptr<BinaryNode>& current){
-        if(current && current->left ){
-            return findMax(current->left);
-        }
-        else {
-            return findMax(current->parent.lock()->right);
-        }
-
-    }
-/*
-   void find_pre_success(shared_ptr<BinaryNode> current, Comparable& x, Comparable& low, Comparable& high) {
-
-        if(current = nullptr)
-            return;
-        else if(current->element == x){
-            if(current->left != nullptr){
-                current = current->left;
-                find_pre_success(current->right, x, low, high);
-            }
-            if(current->right != nullptr){
-                current = current->right;
-                find_pre_success(current->left, x, low, high);
-            }
-
-        }
-
-        /*
-        if(current == nullptr){
-            return;
-        }
-        //left in tree
-        else if(x < current->element) {
-            high = current->element;
-            if(current->left->element < x) {
-                low = current->left->element;
-                find_pre_success(current->left, x, low, high);
-        }
-            else{
-                find_pre_success(current->left, x, low, high);
-            }
-        }
-        else if(x > current->element) {
-            low = current->element;
-            if(current->right->element > x) {
-                high = current->right->element;
-                find_pre_success(current->right, x, low, high);
-            }
-            else {
-                find_pre_success(current->right, x, low, high);
-            }
-        }
-
-    }
+    /**
+    * Finds and sets value of the Predecessor and Successor of a given BST
+    * Predecessor = Floor
+    * Successor = Ceiling
     */
+
+    void find_pre_success( Comparable &key, Comparable &floor, Comparable &ceiling, shared_ptr<BinaryNode> current ){
+        //base case - > stop recursion
+        if(current == nullptr) return;
+
+        // if key is found:
+        if(key == current->element){
+
+            // floor will be max value of left tree,
+            if(current->left != nullptr)
+                floor = findMax( current->left )->element;
+
+
+            // ceiling will be min value of right tree
+            if(current->right != nullptr)
+                ceiling = findMin( current->right )->element;
+
+            return;
+        }
+
+            //key larger than current element: set floor to current element and go right
+        else if(key > current->element) {
+            floor = current->element;
+            find_pre_success(key, floor, ceiling, current->right);
+        }
+
+            //key smaller than current element: set ceiling to current element and go left
+        else if(key < current->element){
+            ceiling = current->element;
+            find_pre_success(key, floor, ceiling, current->left);
+        }
+    }
+
 };
 
 #endif
