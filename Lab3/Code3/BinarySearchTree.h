@@ -44,6 +44,23 @@ class BinarySearchTree
     };
 
   public:
+    class BiIterator{
+    public:
+        BiIterator(shared_ptr<BinaryNode> bn = nullptr);
+
+        Comparable & operator*() const;
+        Comparable* operator->() const;
+
+        bool operator==(const BiIterator &it) const;
+        bool operator!=(const BiIterator &it) const;
+
+        BiIterator& operator++();
+        BiIterator& operator--();
+
+    private:
+        shared_ptr<BinaryNode> *current;
+    };
+
     BinarySearchTree( ) : root{ nullptr }
     {
     }
