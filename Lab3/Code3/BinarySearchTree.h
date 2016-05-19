@@ -26,80 +26,91 @@ using namespace std;
 // ******************ERRORS********************************
 // Throws UnderflowException as warranted
 
-template <typename Comparable>
-class BinarySearchTree
-{
-  private:
-    struct BinaryNode
-    {
+/*
+        Tree
+         20
+      /     \
+     10      30
+    /  \    /  \
+   5   15  25   35
+       /        /
+      12       33
+       \
+       14
+*/
+
+template<typename Comparable>
+class BinarySearchTree {
+private:
+    struct BinaryNode {
         Comparable element;
         shared_ptr<BinaryNode> left, right;
         weak_ptr<BinaryNode> parent;
 
-        BinaryNode( const Comparable & theElement, shared_ptr<BinaryNode> lt, shared_ptr<BinaryNode> rt, weak_ptr<BinaryNode> pt )
-          : element{ theElement }, left{ lt }, right{ rt }, parent{ pt }  { }
+        BinaryNode(const Comparable &theElement, shared_ptr<BinaryNode> lt, shared_ptr<BinaryNode> rt,
+                   weak_ptr<BinaryNode> pt)
+                : element{theElement}, left{lt}, right{rt}, parent{pt} { }
 
-        BinaryNode( Comparable && theElement, shared_ptr<BinaryNode> lt, shared_ptr<BinaryNode> rt, weak_ptr<BinaryNode> pt )
-          : element{ std::move( theElement ) }, left{ lt }, right{ rt }, parent{ pt } { }
+        BinaryNode(Comparable &&theElement, shared_ptr<BinaryNode> lt, shared_ptr<BinaryNode> rt,
+                   weak_ptr<BinaryNode> pt)
+                : element{std::move(theElement)}, left{lt}, right{rt}, parent{pt} { }
     };
 
-  public:
-    class BiIterator{
+public:
+    class BiIterator {
     public:
         BiIterator(shared_ptr<BinaryNode> bn = nullptr);
 
-        Comparable & operator*() const;
-        Comparable* operator->() const;
+        Comparable &operator*() const;
+
+        Comparable *operator->() const;
 
         bool operator==(const BiIterator &it) const;
+
         bool operator!=(const BiIterator &it) const;
 
-        BiIterator& operator++();
-        BiIterator& operator--();
+        BiIterator &operator++();
+
+        BiIterator &operator--();
 
     private:
         shared_ptr<BinaryNode> *current;
     };
 
-    BinarySearchTree( ) : root{ nullptr }
-    {
+    BinarySearchTree() : root{nullptr} {
     }
 
     /**
      * Copy constructor
      */
-    BinarySearchTree( const BinarySearchTree & rhs ) : root{ nullptr }
-    {
-        root = clone( rhs.root, nullptr );
+    BinarySearchTree(const BinarySearchTree &rhs) : root{nullptr} {
+        root = clone(rhs.root, nullptr);
     }
 
     /**
      * Move constructor
      */
-    BinarySearchTree( BinarySearchTree && rhs ) : root{ rhs.root }
-    {
+    BinarySearchTree(BinarySearchTree &&rhs) : root{rhs.root} {
         rhs.root = nullptr;
     }
 
     /**
      * Destructor for the tree
      */
-    ~BinarySearchTree( )
-    {
-        makeEmpty( );
+    ~BinarySearchTree() {
+        makeEmpty();
     }
 
     /**
      * Copy assignment
      */
-    BinarySearchTree & operator=( const BinarySearchTree & rhs )
-    {
+    BinarySearchTree &operator=(const BinarySearchTree &rhs) {
         BinarySearchTree copy = rhs;
-        std::swap( *this, copy );
+        std::swap(*this, copy);
         return *this;
     }
 
-    void find_pred_succ(Comparable x, Comparable& low, Comparable& high) {
+    void find_pred_succ(Comparable x, Comparable &low, Comparable &high) {
         //call private help function
         find_pre_success(x, low, high, root);
 
@@ -108,9 +119,8 @@ class BinarySearchTree
     /**
      * Move assignment
      */
-    BinarySearchTree & operator=( BinarySearchTree && rhs )
-    {
-        std::swap( root, rhs.root );
+    BinarySearchTree &operator=(BinarySearchTree &&rhs) {
+        std::swap(root, rhs.root);
         return *this;
     }
 
@@ -118,99 +128,89 @@ class BinarySearchTree
      * Find the smallest item in the tree.
      * Throw UnderflowException if empty.
      */
-    const Comparable & findMin( ) const
-    {
-        if( isEmpty( ) )
-            throw UnderflowException{ };
-        return findMin( root )->element;
+    const Comparable &findMin() const {
+        if (isEmpty())
+            throw UnderflowException{};
+        return findMin(root)->element;
     }
 
     /**
      * Find the largest item in the tree.
      * Throw UnderflowException if empty.
      */
-    const Comparable & findMax( ) const
-    {
-        if( isEmpty( ) )
-            throw UnderflowException{ };
-        return findMax( root )->element;
+    const Comparable &findMax() const {
+        if (isEmpty())
+            throw UnderflowException{};
+        return findMax(root)->element;
     }
 
     /**
      * Returns true if x is found in the tree.
      */
-    bool contains( const Comparable & x ) const
-    {
-        return contains( x, root );
+    bool contains(const Comparable &x) const {
+        return contains(x, root);
     }
 
     /**
      * Test if the tree is logically empty.
      * Return true if empty, false otherwise.
      */
-    bool isEmpty( ) const
-    {
+    bool isEmpty() const {
         return root == nullptr;
     }
 
     /**
      * Print the tree contents in sorted order.
      */
-    void printTree( ostream & out = cout ) const
-    {
-        if( isEmpty( ) )
+    void printTree(ostream &out = cout) const {
+        if (isEmpty())
             out << "Empty tree" << endl;
         else
-            printTree( root, out );
+            printTree(root, out);
     }
 
     /**
      * Make the tree logically empty.
      */
-    void makeEmpty( )
-    {
-        makeEmpty( root );
+    void makeEmpty() {
+        makeEmpty(root);
     }
 
     /**
      * Insert x into the tree; duplicates are ignored.
      */
-    void insert( const Comparable x )
-    {
+    void insert(const Comparable x) {
         weak_ptr<BinaryNode> parent = root;
-        insert( x, root, parent );
+        insert(x, root, parent);
     }
 
     /**
      * Insert x into the tree; duplicates are ignored.
      */
-    void insert( Comparable && x )
-    {
+    void insert(Comparable &&x) {
         weak_ptr<BinaryNode> parent = root;
-        insert( std::move( x ), root, parent );
+        insert(std::move(x), root, parent);
     }
 
     /**
      * Remove x from the tree. Nothing is done if x is not found.
      */
 
-    void remove( const Comparable x )
-    {
-        remove( x, root );
+    void remove(const Comparable x) {
+        remove(x, root);
     }
 
-    const Comparable get_parent( const Comparable &x )
-    {
+    const Comparable get_parent(const Comparable &x) {
         shared_ptr<BinaryNode> current = _find(x, root);
-        if( current != nullptr && current->parent.lock() != nullptr ){
-                return current->parent.lock()->element;
+        if (current != nullptr && current->parent.lock() != nullptr) {
+            return current->parent.lock()->element;
         }
         else return Comparable();
 
 
     }
 
-  private:
+private:
     // private variables
     shared_ptr<BinaryNode> root;
 
@@ -222,31 +222,28 @@ class BinarySearchTree
      * t is the node that roots the subtree.
      * Set the new root of the subtree.
      */
-    void insert( const Comparable &x, shared_ptr<BinaryNode> &current, weak_ptr<BinaryNode> &parent)
-    {
+    void insert(const Comparable &x, shared_ptr<BinaryNode> &current, weak_ptr<BinaryNode> &parent) {
 
-        if( current == nullptr ){
+        if (current == nullptr) {
             //cout << "Inserting new node" << endl;
             current = make_shared<BinaryNode>(x, nullptr, nullptr, parent);
 
         }
 
-        else if( x < current->element ){
+        else if (x < current->element) {
             //cout << "Moving left" << endl;
             parent = current;
-            insert( x, current->left, parent );
+            insert(x, current->left, parent);
             //cout << "Current = " << current->element << " Parent = " << parent.lock()->element << endl;
         }
 
-        else if( current->element < x ){
+        else if (current->element < x) {
             //cout << "Moving right" << endl;
             parent = current;
-            insert( x, current->right, parent );
+            insert(x, current->right, parent);
             //cout << "Current = " << current->element << " Parent = " << parent.lock()->element << endl;
         }
-        else
-        {
-            ;  // Duplicate; do nothing
+        else { ;  // Duplicate; do nothing
         }
     }
 
@@ -256,21 +253,18 @@ class BinarySearchTree
      * t is the node that roots the subtree.
      * Set the new root of the subtree.
      */
-    void insert( Comparable &&x, shared_ptr<BinaryNode> current,  weak_ptr<BinaryNode> &parent )
-    {
-        if( current == nullptr )
-            current = make_shared<BinaryNode>( std::move( x ), nullptr, nullptr, parent);
-        else if( x < current->element ){
+    void insert(Comparable &&x, shared_ptr<BinaryNode> current, weak_ptr<BinaryNode> &parent) {
+        if (current == nullptr)
+            current = make_shared<BinaryNode>(std::move(x), nullptr, nullptr, parent);
+        else if (x < current->element) {
             parent = current;
-            insert( std::move( x ), current->left, parent);
+            insert(std::move(x), current->left, parent);
         }
-        else if( current->element < x ){
+        else if (current->element < x) {
             parent = current;
-            insert( std::move( x ), current->right, parent);
+            insert(std::move(x), current->right, parent);
         }
-        else
-        {
-             ;  // Duplicate; do nothing
+        else { ;  // Duplicate; do nothing
         }
     }
 
@@ -280,23 +274,22 @@ class BinarySearchTree
      * t is the node that roots the subtree.
      * Set the new root of the subtree.
      */
-    void remove( const Comparable & x, shared_ptr<BinaryNode> &t ){
+    void remove(const Comparable &x, shared_ptr<BinaryNode> &t) {
 
-        if( t == nullptr )
+        if (t == nullptr)
             return;   // Item not found; do nothing
-        if( x < t->element )
-            remove( x, t->left );
-        else if( t->element < x )
-            remove( x, t->right );
-        else if( t->left != nullptr && t->right != nullptr ) // Two children
+        if (x < t->element)
+            remove(x, t->left);
+        else if (t->element < x)
+            remove(x, t->right);
+        else if (t->left != nullptr && t->right != nullptr) // Two children
         {
-            t->element = findMin( t->right )->element;
-            remove( t->element, t->right );
+            t->element = findMin(t->right)->element;
+            remove(t->element, t->right);
         }
-        else
-        {
+        else {
             shared_ptr<BinaryNode> oldNode = t;
-            t = ( t->left != nullptr ) ? t->left : t->right;
+            t = (t->left != nullptr) ? t->left : t->right;
 
         }
 
@@ -306,23 +299,21 @@ class BinarySearchTree
      * Internal method to find the smallest item in a subtree t.
      * Return node containing the smallest item.
      */
-    shared_ptr<BinaryNode> findMin(shared_ptr<BinaryNode> t ) const
-    {
-        if( t == nullptr )
+    shared_ptr<BinaryNode> findMin(shared_ptr<BinaryNode> t) const {
+        if (t == nullptr)
             return nullptr;
-        if( t->left == nullptr )
+        if (t->left == nullptr)
             return t;
-        return findMin( t->left );
+        return findMin(t->left);
     }
 
     /**
      * Internal method to find the largest item in a subtree t.
      * Return node containing the largest item.
      */
-    shared_ptr<BinaryNode> findMax( shared_ptr<BinaryNode> t ) const
-    {
-        if( t != nullptr )
-            while( t->right != nullptr )
+    shared_ptr<BinaryNode> findMax(shared_ptr<BinaryNode> t) const {
+        if (t != nullptr)
+            while (t->right != nullptr)
                 t = t->right;
         return t;
     }
@@ -333,14 +324,13 @@ class BinarySearchTree
      * x is item to search for.
      * t is the node that roots the subtree.
      */
-    bool contains( const Comparable & x, shared_ptr<BinaryNode> t ) const
-    {
-        if( t == nullptr )
+    bool contains(const Comparable &x, shared_ptr<BinaryNode> t) const {
+        if (t == nullptr)
             return false;
-        else if( x < t->element )
-            return contains( x, t->left );
-        else if( t->element < x )
-            return contains( x, t->right );
+        else if (x < t->element)
+            return contains(x, t->left);
+        else if (t->element < x)
+            return contains(x, t->right);
         else
             return true;    // Match
     }
@@ -369,21 +359,20 @@ class BinarySearchTree
      */
 
 
-    shared_ptr<BinaryNode> _find( const Comparable & x, shared_ptr<BinaryNode> t ) const {
-        if( t == nullptr)
+    shared_ptr<BinaryNode> _find(const Comparable &x, shared_ptr<BinaryNode> t) const {
+        if (t == nullptr)
             return nullptr;
-        else if( x < t->element){
+        else if (x < t->element) {
             return _find(x, t->left);
         }
-        else if( x > t->element){
+        else if (x > t->element) {
             return _find(x, t->right);
         }
         else return t; //match
     }
 
 
-    void makeEmpty( shared_ptr<BinaryNode> &t )
-    {
+    void makeEmpty(shared_ptr<BinaryNode> &t) {
         t = nullptr;
     }
 
@@ -391,9 +380,8 @@ class BinarySearchTree
      * Internal method to print a subtree rooted at t in sorted order.
      * In-order traversal is used
      */
-    void printTree( shared_ptr<BinaryNode> t, ostream & out ) const
-    {
-        preorder_print( t, out, 0 );
+    void printTree(shared_ptr<BinaryNode> t, ostream &out) const {
+        preorder_print(t, out, 0);
     }
 
     /**
@@ -401,23 +389,22 @@ class BinarySearchTree
      * Uses preorder print
      */
 
-     void preorder_print( shared_ptr<BinaryNode> t, ostream & out, int indention ) const{
-        if(t != nullptr){
+    void preorder_print(shared_ptr<BinaryNode> t, ostream &out, int indention) const {
+        if (t != nullptr) {
             out << setw(indention) << t->element << endl;
             preorder_print(t->left, out, indention + 4);
-            preorder_print(t->right, out, indention+ 4);
+            preorder_print(t->right, out, indention + 4);
         }
-     }
+    }
 
     /**
      * Internal method to clone subtree.
      */
-    shared_ptr<BinaryNode> clone( shared_ptr<BinaryNode> t, const shared_ptr<BinaryNode>& parent ) const
-    {
-        if( t == nullptr )
+    shared_ptr<BinaryNode> clone(shared_ptr<BinaryNode> t, const shared_ptr<BinaryNode> &parent) const {
+        if (t == nullptr)
             return nullptr;
-        else{
-            auto current = make_shared<BinaryNode>( t->element, nullptr, nullptr, parent );
+        else {
+            auto current = make_shared<BinaryNode>(t->element, nullptr, nullptr, parent);
             current->left = clone(t->left, current);
             current->right = clone(t->right, current);
             return current;
@@ -432,50 +419,38 @@ class BinarySearchTree
     * Successor = Ceiling
     */
 
-    void find_pre_success( Comparable &key, Comparable &floor, Comparable &ceiling, shared_ptr<BinaryNode> current ){
+    void find_pre_success(Comparable &key, Comparable &floor, Comparable &ceiling, shared_ptr<BinaryNode> current) {
 
         //base case -> stop recursion when:
-        if(current == nullptr) return;
+        if (current == nullptr) return;
 
         // if key is found:
-        if(key == current->element){
+        if (key == current->element) {
 
             // floor will be max value of left tree,
-            if(current->left != nullptr)
-                floor = findMax( current->left )->element;
+            if (current->left != nullptr)
+                floor = findMax(current->left)->element;
 
 
             // ceiling will be min value of right tree
-            if(current->right != nullptr)
-                ceiling = findMin( current->right )->element;
+            if (current->right != nullptr)
+                ceiling = findMin(current->right)->element;
 
             return;
         }
 
-        // key larger than current element: set floor to current element and go right
-        else if(key > current->element) {
+            // key larger than current element: set floor to current element and go right
+        else if (key > current->element) {
             floor = current->element;
             find_pre_success(key, floor, ceiling, current->right);
         }
 
-        // key smaller than current element: set ceiling to current element and go left
-        else if(key < current->element){
+            // key smaller than current element: set ceiling to current element and go left
+        else if (key < current->element) {
             ceiling = current->element;
             find_pre_success(key, floor, ceiling, current->left);
         }
     }
 };
-
-
-/*      Tree
-         20
-      /     \
-     10      30
-    /  \    /  \
-   5   15  25   35
-       /        /
-      12       33
-       \
-       14          */
 
 #endif
