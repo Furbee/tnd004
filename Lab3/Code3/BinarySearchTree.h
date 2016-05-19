@@ -59,7 +59,7 @@ private:
 public:
     class BiIterator {
     public:
-        BiIterator(shared_ptr<BinaryNode> bn = nullptr);
+        BiIterator(shared_ptr<BinaryNode> node = nullptr) : current(node) {}
 
         Comparable &operator*() const;
 
@@ -73,8 +73,20 @@ public:
 
         BiIterator &operator--();
 
+
+        /**
+         * Method returns pointer to beginning of the tree
+         * That is the min value.
+         */
+        BiIterator begin(){
+            shared_ptr<BinaryNode> toReturn;
+            toReturn = getMinValPointer(this);
+            return toReturn;
+        }
+
+
     private:
-        shared_ptr<BinaryNode> *current;
+        shared_ptr<BinaryNode> current;
     };
 
     BinarySearchTree() : root{nullptr} {
@@ -108,12 +120,6 @@ public:
         BinarySearchTree copy = rhs;
         std::swap(*this, copy);
         return *this;
-    }
-
-    void find_pred_succ(Comparable x, Comparable &low, Comparable &high) {
-        //call private help function
-        find_pre_success(x, low, high, root);
-
     }
 
     /**
@@ -206,9 +212,18 @@ public:
             return current->parent.lock()->element;
         }
         else return Comparable();
+    }
 
+    void find_pred_succ(Comparable x, Comparable &low, Comparable &high) {
+        //call private help function
+        find_pre_success(x, low, high, root);
+    }
+
+    shared_ptr getMinValPointer(shared_ptr<BinaryNode> ptr){
+        return findMin(ptr);
 
     }
+
 
 private:
     // private variables
