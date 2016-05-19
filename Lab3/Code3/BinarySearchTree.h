@@ -88,8 +88,6 @@ class BinarySearchTree
 
     }
 
-
-
     /**
      * Move assignment
      */
@@ -98,7 +96,6 @@ class BinarySearchTree
         std::swap( root, rhs.root );
         return *this;
     }
-
 
     /**
      * Find the smallest item in the tree.
@@ -197,9 +194,10 @@ class BinarySearchTree
     }
 
   private:
-
+    // private variables
     shared_ptr<BinaryNode> root;
-    int counter = 0;
+
+    //private methods
 
     /**
      * Internal method to insert into a subtree.
@@ -234,8 +232,6 @@ class BinarySearchTree
             ;  // Duplicate; do nothing
         }
     }
-
-
 
     /**
      * Internal method to insert into a subtree.
@@ -331,6 +327,9 @@ class BinarySearchTree
         else
             return true;    // Match
     }
+
+
+
 /****** NONRECURSIVE VERSION*************************
     bool contains( const Comparable & x, BinaryNode *t ) const
     {
@@ -345,6 +344,8 @@ class BinarySearchTree
         return false;   // No match
     }
 *****************************************************/
+
+
 
     /**
      * Internal method to make subtree empty.
@@ -375,8 +376,13 @@ class BinarySearchTree
      */
     void printTree( shared_ptr<BinaryNode> t, ostream & out ) const
     {
-        preorder_print( t, out, counter );
+        preorder_print( t, out, 0 );
     }
+
+    /**
+     * Internal method to print a subtree rooted at t
+     * Uses preorder print
+     */
 
      void preorder_print( shared_ptr<BinaryNode> t, ostream & out, int indention ) const{
         if(t != nullptr){
@@ -401,25 +407,17 @@ class BinarySearchTree
         }
     }
 
-    /*      Tree
-             20
-          /     \
-         10      30
-        /  \    /  \
-       5   15  25   35
-           /        /
-          12       33
-           \
-           14          */
-
     /**
-    * Finds and sets value of the Predecessor and Successor of a given BST
+    * Internal method to find and set value of the
+    * Predecessor and Successor of a given BST
+    *
     * Predecessor = Floor
     * Successor = Ceiling
     */
 
     void find_pre_success( Comparable &key, Comparable &floor, Comparable &ceiling, shared_ptr<BinaryNode> current ){
-        //base case - > stop recursion
+
+        //base case -> stop recursion when:
         if(current == nullptr) return;
 
         // if key is found:
@@ -437,19 +435,30 @@ class BinarySearchTree
             return;
         }
 
-            //key larger than current element: set floor to current element and go right
+        // key larger than current element: set floor to current element and go right
         else if(key > current->element) {
             floor = current->element;
             find_pre_success(key, floor, ceiling, current->right);
         }
 
-            //key smaller than current element: set ceiling to current element and go left
+        // key smaller than current element: set ceiling to current element and go left
         else if(key < current->element){
             ceiling = current->element;
             find_pre_success(key, floor, ceiling, current->left);
         }
     }
-
 };
+
+
+/*      Tree
+         20
+      /     \
+     10      30
+    /  \    /  \
+   5   15  25   35
+       /        /
+      12       33
+       \
+       14          */
 
 #endif
