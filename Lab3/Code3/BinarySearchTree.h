@@ -41,66 +41,10 @@ using namespace std;
 
 template<typename Comparable>
 class BinarySearchTree {
-private:
-    struct BinaryNode {
-        Comparable element;
-        shared_ptr<BinaryNode> left, right;
-        weak_ptr<BinaryNode> parent;
-
-        BinaryNode(const Comparable &theElement, shared_ptr<BinaryNode> lt, shared_ptr<BinaryNode> rt,
-                   weak_ptr<BinaryNode> pt)
-                : element{theElement}, left{lt}, right{rt}, parent{pt} { }
-
-        BinaryNode(Comparable &&theElement, shared_ptr<BinaryNode> lt, shared_ptr<BinaryNode> rt,
-                   weak_ptr<BinaryNode> pt)
-                : element{std::move(theElement)}, left{lt}, right{rt}, parent{pt} { }
-    };
 
 public:
-    class BiIterator {
-    public:
-        BiIterator(shared_ptr<BinaryNode> node = nullptr) : current(node) {}
 
-        Comparable &operator*() const {
-            return this->current->element;
-        }
-
-
-        Comparable operator->() const {
-            return current;
-        }
-
-        bool operator==(const BiIterator &it) const {
-            return this->current->element == it.current->element;
-        }
-
-        bool operator!=(const BiIterator &it) const {
-            return this->current->element != it.current->element;
-        }
-
-        BiIterator &operator++();
-
-        BiIterator &operator--();
-
-
-        /**
-         * Method returns pointer to beginning of the tree
-         * That is the min value.
-         */
-        BiIterator begin(){
-            shared_ptr<BinaryNode> toReturn;
-            toReturn = getMinValPointer(this);
-            return toReturn;
-        }
-
-
-    private:
-<<<<<<< HEAD
-        shared_ptr<BinaryNode> current;
-=======
-        shared_ptr<BinaryNode> current = nullptr;
->>>>>>> 1831af40d31b5077bfcb9383a7c6f150d53df9a9
-    };
+    class BiIterator;
 
     BinarySearchTree() : root{nullptr} {
     }
@@ -232,18 +176,84 @@ public:
         find_pre_success(x, low, high, root);
     }
 
-    shared_ptr getMinValPointer(shared_ptr<BinaryNode> ptr){
-        return findMin(ptr);
-
+    /**
+         * Method returns pointer to beginning of the tree
+         * That is the min value.
+         */
+    BiIterator begin() {
+        return BiIterator( findMin( root ), this );
+    }
+    BiIterator end()
+    {
+        return BiIterator();//{ make_shared<BinaryNode>(Comparable{},strongPtr{},strongPtr{}, weakPtr{} ), this};
     }
 
 
 private:
+
+    struct BinaryNode {
+
+        Comparable element;
+
+        shared_ptr<BinaryNode> left, right;
+        weak_ptr<BinaryNode> parent;
+
+        BinaryNode(const Comparable &theElement, shared_ptr<BinaryNode> lt, shared_ptr<BinaryNode> rt,
+                   weak_ptr<BinaryNode> pt)
+                : element{theElement}, left{lt}, right{rt}, parent{pt} { }
+
+        BinaryNode(Comparable &&theElement, shared_ptr<BinaryNode> lt, shared_ptr<BinaryNode> rt,
+                   weak_ptr<BinaryNode> pt)
+                : element{std::move(theElement)}, left{lt}, right{rt}, parent{pt} { }
+    };
+
     // private variables
     shared_ptr<BinaryNode> root;
 
-    //private methods
+public:
+    class BiIterator
+    {
+    private:
+        //BinarySearchTree* bst;
+        shared_ptr<BinaryNode> current;
+    public:
+        BiIterator() : current(nullptr){
+            //current = nullptr;
+            //bst = nullptr;
+        };
+        BiIterator(shared_ptr<BinaryNode> t) : current{t} {};
 
+        Comparable& operator*() const
+        {
+            return this->current->element;
+        }
+        shared_ptr<BinaryNode> operator->() const
+        {
+            return current;
+        }
+        bool operator==(const BiIterator &it) const
+        {
+            return this->current->element == it.current->element;
+        }
+        bool operator!=(const BiIterator &it) const
+        {
+            return this->current->element != it.current->element;
+//            return !(*this == it);
+        }
+
+        BiIterator &operator++(){
+
+
+        }
+
+        BiIterator &operator--(){
+
+
+        }
+
+    };
+
+private:
     /**
      * Internal method to insert into a subtree.
      * x is the item to insert.
@@ -327,7 +337,7 @@ private:
      * Internal method to find the smallest item in a subtree t.
      * Return node containing the smallest item.
      */
-    shared_ptr<BinaryNode> findMin(shared_ptr<BinaryNode> t) const {
+    static shared_ptr<BinaryNode> findMin(shared_ptr<BinaryNode> t) {
         if (t == nullptr)
             return nullptr;
         if (t->left == nullptr)
@@ -339,7 +349,7 @@ private:
      * Internal method to find the largest item in a subtree t.
      * Return node containing the largest item.
      */
-    shared_ptr<BinaryNode> findMax(shared_ptr<BinaryNode> t) const {
+    static shared_ptr<BinaryNode> findMax(shared_ptr<BinaryNode> t) {
         if (t != nullptr)
             while (t->right != nullptr)
                 t = t->right;
