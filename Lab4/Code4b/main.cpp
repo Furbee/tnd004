@@ -25,7 +25,7 @@ Graph * readGraph(string fileName);
 int main()
 {
     int choice = 0;
-    string fileName;
+    string fileName = "/Users/Oscar/Documents/tnd004/Lab4/Code4b/graph1.txt";
 
     Graph *G = new Graph(1);
     Graph *temp;
@@ -36,8 +36,8 @@ int main()
         {
             case 1:
                 cout << "File name   ? ";
-                cout << flush;
-                getline(cin, fileName);
+                //cout << flush;
+                //getline(cin, fileName);
                 temp = readGraph(fileName);
                 if (temp != NULL)
                 {
