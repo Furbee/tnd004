@@ -58,10 +58,19 @@ void Graph::mstPrim() const {
     int *dist = new int[size + 1];
     int *path = new int[size + 1];
     bool *done = new bool[size + 1];
-
-    int s = 1; //Start position
     vector<Edge> edge;
 
+    for(int i = 1; i <= size; i++)
+    {
+        dist[i] = INFINITY;
+        path[i] = 0;
+        done[i] = false;
+    }
+
+
+    int s = 1; //Start position
+    dist[s] = 0;
+    done[s] = true;
 
     //Do while there's stuff in the queues
     while (true) {
@@ -76,6 +85,8 @@ void Graph::mstPrim() const {
             adjacent = array[s].getNext(); //check next adjacent vector
         }
         done[s] = true;
+
+        edge.push_back(Edge(s, path[s], dist[s]));
 
         int smallest = INFINITY;
 
