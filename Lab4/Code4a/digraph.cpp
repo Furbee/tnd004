@@ -8,6 +8,7 @@
 #include <iostream>
 #include <iomanip>
 #include <cassert>
+#include <vector>
 
 using namespace std;
 
@@ -153,5 +154,23 @@ void Digraph::printPath(int t) const
          return;
     }
 
-    // *** TODO ***
+    vector<int> v;
+    vector<int>::reverse_iterator iter;
+
+    int distance = dist[t];
+
+    while(path[t] != 0)
+    {
+        v.push_back(t); // Adds a new element at the end of the vector, after its current last element.
+        t = path[t];
+    }
+    v.push_back(t);
+
+    for(iter = v.rbegin(); iter != v.rend(); iter++)
+    {
+        std::cout << *iter << "  ";
+    }
+
+    std::cout << " ( " << distance << " ) " << endl;
+
 }

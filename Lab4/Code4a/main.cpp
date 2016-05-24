@@ -25,7 +25,7 @@ Digraph * readGraph(string fileName);
 int main()
 {
     int choice = 0;
-    string fileName = "/Users/VikH/Documents/Skola/tnd004/Lab4/Code4a/digraph1.txt";
+    string fileName = "/Users/Oscar/Documents/tnd004/Lab4/Code4a/digraph1.txt";
     int s, t;
 
     Digraph *G = new Digraph(1);
