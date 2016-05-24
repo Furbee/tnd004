@@ -55,6 +55,8 @@ void Graph::removeEdge(int u, int v) {
 // Prim's minimum spanning tree algorithm
 void Graph::mstPrim() const {
 
+    //allocate memory for values needed
+    //can do without any of these..?
     int *dist = new int[size + 1];
     int *path = new int[size + 1];
     bool *done = new bool[size + 1];
@@ -117,6 +119,7 @@ void Graph::mstPrim() const {
 
     std::cout << endl <<"Total weight = " << weight;
 
+    //deallocate memory
     delete[] dist;
     delete[] path;
     delete[] done;
