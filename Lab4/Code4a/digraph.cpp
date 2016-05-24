@@ -60,16 +60,15 @@ void Digraph::removeEdge(int u, int v)
 // unweighted single source shortest paths
 void Digraph::uwsssp(int s)
 {
+    // Assess input
     if (s < 1 || s > size)
     {
          cout << "\nERROR: expected source s in range 1.." << size << " !" << endl;
          return;
     }
 
-    // *** TODO ***
-
+    //input ok. Do:
     int v = 0;
-    int u = 0;
     Queue<int> Q;
 
     for(int i = 1; i <= size; i++)
@@ -79,22 +78,26 @@ void Digraph::uwsssp(int s)
     }
 
     dist[s] = 0;
-
     Q.enqueue(s);
 
+    //Do while there's stuff in the queues
     while (!Q.isEmpty()) {
         v = Q.getFront();
         Q.dequeue();
 
-        for ((v,u); (v,u) <= s; v++,u++)
-            if ( dist[u] == INFINITY )
-        {
-            dist[u] = dist[v]+1;
-            path[u] = v;
-            Q.enqueue(u);
+        Node* adjacent = array[v].getFirst();
+
+        //for all adjacent vectors check if it's been visited. If has not, set path and dist.
+         while( adjacent ){
+            if ( dist[adjacent->vertex] == INFINITY )
+            {
+                dist[adjacent->vertex] = dist[v] + 1;   //the distance from the origin
+                path[adjacent->vertex] = v;             //the path goes from v
+                Q.enqueue(adjacent->vertex);            //enqueue the vector
+            }
+             adjacent = array[v].getNext(); //check next adjacent vector
         }
     }
-
 }
 
 
