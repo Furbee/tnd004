@@ -58,8 +58,14 @@ void Graph::mstPrim() const {
     int *dist = new int[size + 1];
     int *path = new int[size + 1];
     bool *done = new bool[size + 1];
+
     vector<Edge> edge;
 
+    int s = 1; // s = start position
+    dist[s] = 0;
+    done[s] = true;
+
+    // init values of the list
     for(int i = 1; i <= size; i++)
     {
         dist[i] = INFINITY;
@@ -67,18 +73,15 @@ void Graph::mstPrim() const {
         done[i] = false;
     }
 
-
-    int s = 1; //Start position
-    dist[s] = 0;
-    done[s] = true;
-
-    //Do while there's stuff in the queues
-    while (true) {
-
+    // set shortest paths for the graph
+    while (true)
+    {
         Node *adjacent = array[s].getNext();
 
-        while (adjacent) {
-            if (!done[adjacent->vertex] && dist[adjacent->vertex] > adjacent->weight) {
+        while (adjacent)
+        {
+            if (!done[adjacent->vertex] && dist[adjacent->vertex] > adjacent->weight)
+            {
                 dist[adjacent->vertex] = adjacent->weight;    //the distance from the origin
                 path[adjacent->vertex] = s;                             //the path goes from v
             }
@@ -90,9 +93,11 @@ void Graph::mstPrim() const {
 
         int smallest = INFINITY;
 
-
-        for (int i = 1; i <= size; i++) {
-            if (dist[i] < smallest && !done[i]) {
+        // look for smallest distance vertex
+        for (int i = 1; i <= size; i++)
+        {
+            if (dist[i] < smallest && !done[i])
+            {
                 smallest = dist[i];
                 s = i;
             }
@@ -103,9 +108,10 @@ void Graph::mstPrim() const {
 
     int weight = 0;
 
+    // calculate total weight
     for (unsigned int i = 1; i < edge.size(); ++i)
     {
-        std::cout << "( " << edge[i].tail << ", " << edge[i].head << ". " << edge[i].weight << ")" << endl;
+        //std::cout << "( " << edge[i].tail << ", " << edge[i].head << ". " << edge[i].weight << ")" << endl;
         weight += edge[i].weight;
     }
 
