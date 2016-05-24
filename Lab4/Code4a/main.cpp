@@ -25,7 +25,7 @@ Digraph * readGraph(string fileName);
 int main()
 {
     int choice = 0;
-    string fileName;
+    string fileName = "/Users/Oscar/Documents/tnd004/Lab4/digraph1.txt";
     int s, t;
 
     Digraph *G = new Digraph(1);
@@ -36,9 +36,9 @@ int main()
         switch (choice = menu())
         {
             case 1:
-                cout << "File name   ? ";
-                cout << flush;
-                getline(cin, fileName);
+                //cout << "File name   ? ";
+                //cout << flush;
+                //getline(cin, fileName);
                 temp = readGraph(fileName);
                 if (temp != nullptr)
                 {
