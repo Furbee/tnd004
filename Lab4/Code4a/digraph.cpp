@@ -68,16 +68,11 @@ void Digraph::uwsssp(int s)
     }
 
     //input ok. Do:
+
+    init_list(s);
+
     int v = 0;
     Queue<int> Q;
-
-    for(int i = 1; i <= size; i++)
-    {
-        dist[i] = INFINITY;
-        path[i] = 0;
-    }
-
-    dist[s] = 0;
     Q.enqueue(s);
 
     //Do while there's stuff in the queues
@@ -110,7 +105,40 @@ void Digraph::pwsssp(int s)
          return;
     }
 
-    // *** TODO ***
+    //input ok. Do:
+    init_list(s);
+
+    //Do while there's stuff in the queues
+    while ( true ) {
+
+        Node* adjacent = array[s].getFirst();
+
+        while( adjacent ) {
+            if ( !done[adjacent->vertex] && dist[adjacent->vertex] > dist[s] + adjacent->weight )
+            {
+                dist[adjacent->vertex] = dist[s] + adjacent->weight;    //the distance from the origin
+                path[adjacent->vertex] = s;                             //the path goes from v
+            }
+            adjacent = array[s].getNext(); //check next adjacent vector
+        }
+            done[s] = true;
+
+            int smallest = INFINITY;
+
+
+            for( int i = 1 ; i <= size ; i++ ){
+                if( dist[i] < smallest && !done[i] ){
+                    smallest = dist[i];
+                    s = i;
+                }
+            }
+
+            //v = smallest_distance();
+
+            if( smallest == INFINITY ) break;
+
+
+    }
 }
 
 // print graph
@@ -154,4 +182,21 @@ void Digraph::printPath(int t) const
     }
 
     // *** TODO ***
+}
+
+/**
+ *  Internal method for initialize a list.
+ *  Origin is the given source
+ */
+
+void Digraph::init_list(int origin){
+    for(int i = 1; i <= size; i++)
+    {
+        dist[i] = INFINITY;
+        path[i] = 0;
+        done[i] = false;
+    }
+    dist[origin] = 0;
+    done[origin] = true;
+
 }

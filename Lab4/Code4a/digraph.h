@@ -50,6 +50,9 @@ private:
     int  *path;
     bool *done;
     int  size;
+
+    // -- INTERNAL METHODS
+    void init_list(int origin);
 };
 
 #endif
