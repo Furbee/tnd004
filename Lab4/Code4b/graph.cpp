@@ -55,17 +55,13 @@ void Graph::removeEdge(int u, int v) {
 // Prim's minimum spanning tree algorithm
 void Graph::mstPrim() const {
 
+    vector<Edge> edge;
+
     //allocate memory for values needed
     //can do without any of these..?
     int *dist = new int[size + 1];
     int *path = new int[size + 1];
     bool *done = new bool[size + 1];
-
-    vector<Edge> edge;
-
-    int s = 1; // s = start position
-    dist[s] = 0;
-    done[s] = true;
 
     // init values of the list
     for(int i = 1; i <= size; i++)
@@ -75,20 +71,25 @@ void Graph::mstPrim() const {
         done[i] = false;
     }
 
+    int s = 1, totalWeight = 0;; // s = start position
+    dist[s] = 0;
+    done[s] = true;
+
     // set shortest paths for the graph
     while (true)
     {
-        Node *adjacent = array[s].getNext();
+        Node *adjacent = array[s].getFirst();
 
         while (adjacent)
         {
             if (!done[adjacent->vertex] && dist[adjacent->vertex] > adjacent->weight)
             {
-                dist[adjacent->vertex] = adjacent->weight;    //the distance from the origin
+                dist[adjacent->vertex] = adjacent->weight;              //the distance from the origin
                 path[adjacent->vertex] = s;                             //the path goes from v
             }
             adjacent = array[s].getNext(); //check next adjacent vector
         }
+
         done[s] = true;
 
         edge.push_back(Edge(s, path[s], dist[s]));
@@ -96,9 +97,9 @@ void Graph::mstPrim() const {
         int smallest = INFINITY;
 
         // look for smallest distance vertex
-        for (int i = 1; i <= size; i++)
+        for (unsigned int i = 1; i <= size ; i++)
         {
-            if (dist[i] < smallest && !done[i])
+            if (!done[i] && dist[i] < smallest )
             {
                 smallest = dist[i];
                 s = i;
@@ -108,16 +109,15 @@ void Graph::mstPrim() const {
         if (smallest == INFINITY) break;
     }
 
-    int weight = 0;
-
     // calculate total weight
-    for (unsigned int i = 1; i < edge.size(); ++i)
+    for (unsigned int i = 1 ; i < edge.size() ; ++i)
     {
-        //std::cout << "( " << edge[i].tail << ", " << edge[i].head << ". " << edge[i].weight << ")" << endl;
-        weight += edge[i].weight;
+        std::cout << "( " << edge[i].tail << ", " << edge[i].head << ". " << edge[i].weight << ")" << endl;
+        totalWeight += edge[i].weight;
     }
 
-    std::cout << endl <<"Total weight = " << weight;
+    std::cout <<"Total weight: " << totalWeight << endl
+              << "=====================================================================" << endl;
 
     //deallocate memory
     delete[] dist;
@@ -129,6 +129,42 @@ void Graph::mstPrim() const {
 void Graph::mstKruskal() const {
 
     //TODO:
+
+    Heap<Edge> H;
+    DSets D(size);
+
+    int total = 0, counter = 0;
+
+    //H.heapify(H);
+    for (int i = 1 ; i <= size ; i++)
+    {
+        Node *current = array[i].getFirst();
+        while (current)
+        {
+            if (current->vertex < i)
+            {
+                H.insert( Edge(current->vertex, i, current->weight) );
+            }
+            current = array[i].getNext();
+        }
+    }
+    //Heapification done
+
+    //find new edges
+    while (counter < size-1) //number of edges must be n-1
+    {
+        Edge n = H.deleteMin();
+        if ( D.find(n.head) != D.find(n.tail) )
+        {
+            D.join( D.find(n.head), D.find(n.tail) );
+            counter++;
+            total += n.weight;
+            cout << n << endl;
+        }
+
+    }
+    cout << endl << "Total weight of this mf masterpiece is somewhere around exactly: " << total << endl
+         << "=====================================================================" << endl;
 }
 
 // print graph
@@ -144,3 +180,4 @@ void Graph::printGraph() const {
 
     cout << "------------------------------------------------------------------" << endl;
 }
+

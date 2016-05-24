@@ -25,7 +25,7 @@ Graph * readGraph(string fileName);
 int main()
 {
     int choice = 0;
-    string fileName = "/Users/Oscar/Documents/tnd004/Lab4/Code4b/graph1.txt";
+    string fileName = "/Users/VikH/Documents/Skola/tnd004/Lab4/Code4b/graph1.txt";
 
     Graph *G = new Graph(1);
     Graph *temp;
