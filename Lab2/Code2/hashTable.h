@@ -1,6 +1,6 @@
 
 /*
-  Author: Aida Nordman
+  Author: Viktor Hellman och Oscar Nord
   Course: TND004, Lab 2
   Description: template class HashTable represents an open addressing hash table
               (also known as closed_hashing) with linear probing
@@ -62,15 +62,6 @@ public:
     {
         return count_new_items;
     }
-
-
-
-
-    unsigned int getSize(){
-        return _size;
-    }
-
-
 
 
     //Return a pointer to the value associated with key
@@ -151,8 +142,10 @@ private:
     //Disable assignment operator!!
     const HashTable& operator=(const HashTable &) = delete;
 
+    //Item<Key_Type, Value_Type>* findItem(const Key_Type& key);
+    unsigned findIndex(const Key_Type& key);
     void rehash();
-    unsigned search_empty_slot(unsigned tmp_hash);
+    void delete_Item(const unsigned& idx);
     void add_new_Item(const unsigned &idx, const Key_Type& key, const Value_Type& val);
 };
 
@@ -173,9 +166,10 @@ unsigned nextPrime( int n );
 //f is the hash function
 template <typename Key_Type, typename Value_Type>
 HashTable<Key_Type, Value_Type>::HashTable(int table_size, HASH f)
-        : _size(nextPrime(table_size)), nItems(0), nDeleted(0), total_visited_slots(0), count_new_items(0), h(f)
+        : _size(nextPrime(table_size)), nItems(0), nDeleted(0), total_visited_slots(0), count_new_items(0), h(f),
+        hTable( new Item<Key_Type, Value_Type>*[nextPrime(table_size)]() )
 {
-    hTable = new Item<Key_Type, Value_Type>*[nextPrime(table_size)]();
+    //hTable = new Item<Key_Type, Value_Type>*[nextPrime(table_size)]();
 }
 
 
@@ -192,40 +186,46 @@ HashTable<Key_Type, Value_Type>::~HashTable()
 }
 
 
+
 //Return a pointer to the value associated with key
 //If key does not exist in the table then nullptr is returned
 template <typename Key_Type, typename Value_Type>
 const Value_Type* HashTable<Key_Type, Value_Type>::_find(const Key_Type& key)
 {
-    auto tmp_hash = h(key, _size);
+    auto tempHash = findIndex(key);
+
+    if(hTable[tempHash] == nullptr) { return nullptr; }
+
+    else{
+        return hTable[tempHash]->get_value();
+    }
+
+
+    /*auto tmp_hash = h(key, _size);
+
+
 
     //if slot is empty keys does not exist
     if (!hTable[tmp_hash]){
-        cout << "Key not found!";
+        total_visited_slots++;
+
         // key not found
         return nullptr;
     }
 
     //if slot is occupied but does not equal key
     else if(hTable[tmp_hash] && hTable[tmp_hash]->get_key() != key){
-        cout << "Slot occupied" << endl <<"Searching proximal slots." << endl;
-
         unsigned emptySlot = search_empty_slot(tmp_hash);
 
-        for(tmp_hash++ ; tmp_hash < emptySlot ; tmp_hash++ ) {  //check all slots up to emptySlot
-            if(hTable[tmp_hash]->get_key() == key){
-                cout << "_find found " << "key: '" << key << "', with value: " << hTable[tmp_hash]->get_value() << endl;
-                return &hTable[tmp_hash]->get_value();
-            }
+        for(tmp_hash++ ; tmp_hash < emptySlot ; tmp_hash++ ) {  //check for key at all slots up to emptySlot
+            total_visited_slots++;
+            if(hTable[tmp_hash]->get_key() == key){ return &hTable[tmp_hash]->get_value(); }
         }
-        return nullptr;
+        return nullptr; //if not found before an emptyslot, it doesn't exist.
     }
 
     //slot is occupied by key
-    else {
-        cout << "_find found " << "key: '" << key << "', with value: " << hTable[tmp_hash]->get_value() << endl;
-        return &hTable[tmp_hash]->get_value();
-    }
+    else { return &hTable[tmp_hash]->get_value(); }*/
 }
 
 
@@ -235,28 +235,16 @@ const Value_Type* HashTable<Key_Type, Value_Type>::_find(const Key_Type& key)
 template <typename Key_Type, typename Value_Type>
 void HashTable<Key_Type, Value_Type>::_insert(const Key_Type& key, const Value_Type& v)
 {
-    auto tmp_hash = h(key, _size);
+    auto tempHash = findIndex(key);
 
-    //if key already exists at given slot
-    if(hTable[tmp_hash] && hTable[tmp_hash]->get_key() == key){
-        hTable[tmp_hash]->set_value(v);                                       //change value at key
-        total_visited_slots++;
-
-        cout << "Value updated" << endl;
-        return;
+    if( hTable[tempHash] != nullptr ) { //value found, update and quit.
+            hTable[tempHash]->set_value(v);
+            return;
     }
 
-    //if slot is occupied by another key with same hash-index
-    else if(hTable[tmp_hash]){
-        cout << "Slot occupied by: " << hTable[tmp_hash]->get_key() << endl
-             << "Searching for new slot..." << endl;
-        tmp_hash = search_empty_slot(tmp_hash) % _size;                              //return new slot to insert item in.
-        add_new_Item(tmp_hash, key, v);
-    }
+    //if value not found, insert new Item at tmp_hash
+    add_new_Item(tempHash, key, v);
 
-    else {
-         add_new_Item(tmp_hash, key, v);
-    }
 
     //check if loadfactor gets larger than allowed
     if(loadFactor() >= MAX_LOAD_FACTOR) { rehash(); }
@@ -270,20 +258,12 @@ void HashTable<Key_Type, Value_Type>::_insert(const Key_Type& key, const Value_T
 //otherwise, return false
 template <typename Key_Type, typename Value_Type>
 bool HashTable<Key_Type, Value_Type>::_remove(const Key_Type& key) {
-    //IMPLEMENT
-    auto tmpHash = h(key, _size);
-    if(_find(key) == nullptr) {
+    auto tempHash = findIndex(key);
 
-        cout << "Key not found!." << endl << "Aborting." << endl;
-        return false;
-    }
+    if(hTable[tempHash] == nullptr) { return false; }
+
     else{
-        hTable[tmpHash] = Deleted_Item<Key_Type, Value_Type>::get_Item();
-
-        total_visited_slots++;
-        nItems--;
-        nDeleted++;
-
+        delete_Item(tempHash);
         return true;
     }
 }
@@ -298,6 +278,9 @@ void HashTable<Key_Type, Value_Type>::display(ostream& os)
     os << "-------------------------------\n";
     os << "Number of items in the table: " << get_number_OF_items() << endl;
     os << "Load factor: " << fixed << setprecision(2) << loadFactor() << endl;
+
+    os << "Unique items: " << count_new_items << endl;
+    os << "nItems: " << nItems << endl;
 
     for (unsigned i = 0; i < _size; ++i)
     {
@@ -322,17 +305,48 @@ void HashTable<Key_Type, Value_Type>::display(ostream& os)
 /* ************************************************************************************ *
  *                           Auxiliar member functions                                  *
 ** ************************************************************************************ */
+template<typename Key_Type, typename Value_Type>
+unsigned HashTable<Key_Type, Value_Type>::findIndex(const Key_Type& key){
+    auto tempHash = h(key, _size);
+
+    while(hTable[tempHash] != nullptr){
+        if(hTable[tempHash]->get_key() == key){
+            total_visited_slots++;
+            return tempHash;
+        }
+        tempHash = ++tempHash %(_size);
+        total_visited_slots++;
+    }
+    return tempHash;
+
+}
+//
+//template<typename Key_Type, typename Value_Type>
+//Item<Key_Type, Value_Type>* HashTable<Key_Type, Value_Type>::findItem(const Key_Type& key){
+//    auto tempHash = h(key, _size);
+//
+//    while(hTable[tempHash] != nullptr){
+//        if(hTable[tempHash]->get_key() == key){
+//            return hTable[tempHash];
+//        }
+//        tempHash = ++tempHash %(_size);
+//        total_visited_slots++;
+//    }
+//    return nullptr;
+//
+//}
 
 template <typename Key_Type, typename Value_Type>
 void HashTable<Key_Type, Value_Type>::rehash() {
-
+    cout << endl << "Attemptning rehash" << endl;
     auto OldhTable = hTable;
     int OldSize = _size;
 
-    nItems = 0;
-
-    _size = nextPrime(OldSize * 2);
+    _size = nextPrime(OldSize * 2); //define new size as a primenumber
     hTable = new Item<Key_Type, Value_Type>*[_size]();
+    nItems = 0;
+    nDeleted = 0;
+    count_new_items = 0;
 
     //Copy to new Table
     for (size_t i = 0; i < OldSize; i++) {
@@ -348,25 +362,10 @@ void HashTable<Key_Type, Value_Type>::rehash() {
         }
     }
     delete[] OldhTable;
+    cout << endl << "Rehash completed" << endl;
 }
 
-//searches for for next empty slot after index tmp_hash
-template <typename Key_Type, typename Value_Type>
-unsigned HashTable<Key_Type, Value_Type>::search_empty_slot(unsigned tmp_hash) {
-    unsigned i = tmp_hash;
-
-    while ( hTable[i]) {
-        i++;
-        cout << "Slot tested:" << i % _size << ". ";
-        total_visited_slots++;
-    }
-    cout << endl << "Slot found at " << i %_size << endl;
-    cout << endl;
-    return i;
-
-}
-
-//add a new Item to the HashTable,
+//add a new Item to the HashTable, add to appropriate values
 template <typename Key_Type, typename Value_Type>
 void HashTable<Key_Type, Value_Type>::add_new_Item(const unsigned& idx, const Key_Type& key, const Value_Type& val){
     hTable[idx] = new Item<Key_Type, Value_Type>(key, val);
@@ -375,24 +374,24 @@ void HashTable<Key_Type, Value_Type>::add_new_Item(const unsigned& idx, const Ke
 }
 
 template <typename Key_Type, typename Value_Type>
+void HashTable<Key_Type, Value_Type>::delete_Item(const unsigned& idx){
+        hTable[idx] = Deleted_Item<Key_Type,Value_Type>::get_Item();
+        total_visited_slots++;
+        nItems--;
+        nDeleted++;
+}
+
+template <typename Key_Type, typename Value_Type>
 Value_Type& HashTable<Key_Type, Value_Type>::operator[](const Key_Type& key) {
 
-    //cout << "Inside overloaded operator" << endl;
+    auto temp = findIndex(key);
 
-    auto tempHash = h(key, _size);
-    //cout << "Value assigned!" << endl;
-
-    if(hTable[tempHash] && hTable[tempHash]->get_key() == key){
-        cout << "get_key == key" << endl;
-        total_visited_slots++;
-        hTable[tempHash]->set_value(hTable[tempHash]->get_value()++);
+    if(hTable[temp] == nullptr){
+        //_insert(key, Value_Type());
+        add_new_Item(temp, key, Value_Type());
+        return hTable[findIndex(key)]->get_value();
     }
-    else{
-        cout << "Key don't exist... inserting" << endl;
-        _insert(key, Value_Type());
-    }
-
-    return hTable[tempHash]->get_value();
+    return hTable[temp]->get_value();
 }
 
 
